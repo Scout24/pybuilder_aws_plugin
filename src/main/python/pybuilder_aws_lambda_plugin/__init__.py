@@ -72,7 +72,7 @@ def package_lambda_code(project, logger):
 
 
 @task
-@description("Upload a packaged lambda zip to S3")
+@description("Upload a packaged lambda-zip to S3")
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
