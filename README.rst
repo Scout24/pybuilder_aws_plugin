@@ -7,18 +7,16 @@ PyBuilder plugin to handle packaging and uploading Python AWS Lambda code.
 How to use the Plugin
 ---------------------
 
-Add plugin dependency to your `build.py`
-```python
-use_plugin('pypi:pybuilder_release_plugin')
-```
+Add plugin dependency to your `build.py`::
 
-Change version of your project and ...
-```bash
-$ pyb package_lambda_code
-...
-$ pyb upload_zip_to_s3
-...
-```
+    use_plugin('pypi:pybuilder_release_plugin')
+
+Change version of your project and ...::
+
+    $ pyb package_lambda_code
+    ...
+    $ pyb upload_zip_to_s3
+    ...
 
 Licence
 -------
