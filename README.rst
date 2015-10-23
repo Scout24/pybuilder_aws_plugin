@@ -11,7 +11,7 @@ Add plugin dependency to your `build.py`::
 
     use_plugin('pypi:pybuilder_release_plugin')
 
-Change version of your project and ...::
+And ...::
 
     $ pyb package_lambda_code
     ...
