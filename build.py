@@ -15,7 +15,7 @@ version = VCSRevision().get_git_revision_count()
 summary = "PyBuilder plugin to handle packaging and uploading Python AWS Lambda code."
 authors = [Author('Valentin Haenel', 'valentin@haenel.co'),
            Author('Stefan Neben',    'stefan.neben@gmail.com'),
-          ]
+           ]
 license = 'Apache'
 url = 'https://github.com/ImmobilienScout24/pybuilder_aws_lambda_plugin'
 
