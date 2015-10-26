@@ -5,6 +5,7 @@ import os
 import mock
 import tempfile
 import boto3
+import shutil
 from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
@@ -32,6 +33,9 @@ class UploadZipToS3Test(TestCase):
         self.test_data = 'testdata'
         with open(self.zipfile_name, 'wb') as fp:
             fp.write(self.test_data)
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
 
     @mock_s3
     @mock.patch('pybuilder_aws_lambda_plugin.timestamp')
