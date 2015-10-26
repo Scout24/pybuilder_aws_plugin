@@ -55,10 +55,10 @@ class PackageLambdaCodeTest(TestCase):
                                                         prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
         zf = zipfile.ZipFile(self.zipfile_name)
-        expected = ['test_package_directory/__init__.py',
+        expected = sorted(['test_package_directory/__init__.py',
                     'test_module_file.py',
-                    'script.py']
-        self.assertEqual(zf.namelist(), expected)
+                    'script.py'])
+        self.assertEqual(sorted(zf.namelist()), expected)
 
 
 class UploadZipToS3Test(TestCase):
