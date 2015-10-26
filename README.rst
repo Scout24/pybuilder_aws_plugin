@@ -11,7 +11,7 @@ Add plugin dependency to your ``build.py``:
 
 .. code:: python
 
-    use_plugin('pypi:pybuilder_release_plugin')
+    use_plugin('pypi:pybuilder_aws_lambda_plugin')
 
 And ...
 
