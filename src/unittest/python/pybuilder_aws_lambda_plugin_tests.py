@@ -6,12 +6,14 @@ from unittest import TestCase
 from pybuilder.core import Project, Logger
 from pybuilder_aws_lambda_plugin import upload_zip_to_s3
 
+
 class PackageLambdaCodeTest(TestCase):
     def setUp(self):
         pass
 
     def tearDown(self):
         pass
+
 
 class UploadZipToS3Test(TestCase):
     def setUp(self):
