@@ -23,6 +23,7 @@ url = 'https://github.com/ImmobilienScout24/pybuilder_aws_lambda_plugin'
 @init
 def set_properties(project):
     project.set_property('install_dependencies_upgrade', True)
+    project.depends_on("boto3")
     project.set_property('distutils_classifiers', [
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
