@@ -6,19 +6,59 @@ import mock
 import tempfile
 import boto3
 import shutil
+import zipfile
 from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
-from pybuilder_aws_lambda_plugin import upload_zip_to_s3
+from pybuilder_aws_lambda_plugin import upload_zip_to_s3, package_lambda_code
 
 
 class PackageLambdaCodeTest(TestCase):
 
     def setUp(self):
-        pass
+        self.tempdir = tempfile.mkdtemp(prefix='palp-')
+        self.project = Project(basedir=self.tempdir, name='palp')
+
+        self.project.set_property('dir_target', 'target')
+        self.dir_target = os.path.join(self.tempdir, 'target')
+        os.mkdir(self.dir_target)
+        self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
+
+        os.mkdir(os.path.join(self.dir_target, 'lambda_dependencies'))
+
+        self.project.set_property('dir_source_main_python', 'source/main/python')
+        self.dir_source_main_python = os.path.join(self.tempdir, 'source/main/python')
+        os.makedirs(self.dir_source_main_python)
+
+        with open(os.path.join(self.dir_source_main_python,
+                               'test_module_file.py'), 'wb') as fp:
+            fp.write('test_module')
+        os.mkdir(os.path.join(self.dir_source_main_python,
+                              'test_package_directory'))
+        with open(os.path.join(self.dir_source_main_python,
+                               'test_package_directory',
+                               '__init__.py'), 'wb') as fp:
+            fp.write('test_init')
+
+        self.project.set_property('dir_source_main_scripts', 'source/main/scripts')
+        self.dir_source_main_scripts = os.path.join(self.tempdir, 'source/main/scripts')
+        os.makedirs(self.dir_source_main_scripts)
+
+        with open(os.path.join(self.dir_source_main_scripts, 'script.py'), 'wb') as fp:
+            fp.write('test_script')
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.tempdir)
+
+    @mock.patch('pybuilder_aws_lambda_plugin.prepare_dependencies_dir')
+    def test_package_lambda_assembles_zipfile_correctly(self,
+                                                        prepare_dependencies_dir_mock):
+        package_lambda_code(self.project, mock.MagicMock(Logger))
+        zf = zipfile.ZipFile(self.zipfile_name)
+        expected = ['test_package_directory/__init__.py',
+                    'test_module_file.py',
+                    'script.py']
+        self.assertEqual(zf.namelist(), expected)
 
 
 class UploadZipToS3Test(TestCase):
