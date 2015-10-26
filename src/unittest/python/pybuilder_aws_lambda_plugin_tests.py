@@ -4,7 +4,7 @@
 import mock
 from unittest import TestCase
 from pybuilder.core import Project, Logger
-project.depends_on("boto3")from pybuilder_aws_lambda_plugin import upload_zip_to_s3
+from pybuilder_aws_lambda_plugin import upload_zip_to_s3
 
 class PackageLambdaCodeTest(TestCase):
     def setUp(self):
