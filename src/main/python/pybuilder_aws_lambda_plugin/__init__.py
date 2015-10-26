@@ -88,10 +88,6 @@ def upload_zip_to_s3(project, logger):
     keyname = '{0}-{1}.zip'.format(project.name, timestamp())
     bucket_name = '{0}-lambda-zips'.format(project.name)
     s3 = boto3.resource('s3')
-    if not check_bucket_exists(bucket_name):
-        logger.error("Bucket: '{0}' doesn't exist.".format(bucket_name))
-        logger.info("Will try to create it.")
-        s3.create_bucket(Bucket=bucket_name)
     logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
                 format(bucket_name, keyname))
     s3.Bucket(bucket_name).put_object(Key=keyname, Body=data)
