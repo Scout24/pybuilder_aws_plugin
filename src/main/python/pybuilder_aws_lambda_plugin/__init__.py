@@ -53,6 +53,13 @@ def check_bucket_exists(bucket_name):
     return bucket_name in [b.name for b in s3.buckets.all()]
 
 
+def timestamp():
+    timestamp = time.time()
+    formatted_timestamp = datetime.fromtimestamp(timestamp)
+    formatted_timestamp = formatted_timestamp.strftime('%Y%m%d%H%M%S')
+    return formatted_timestamp
+
+
 @task
 @description("Package the modules, dependencies and scripts into a lambda-zip")
 @depends('package')
@@ -78,10 +85,7 @@ def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
-    timestamp = time.time()
-    formatted_timestamp = datetime.fromtimestamp(timestamp)
-    formatted_timestamp = formatted_timestamp.strftime('%Y%m%d%H%M%S')
-    keyname = '{0}-{1}.zip'.format(project.name, formatted_timestamp)
+    keyname = '{0}-{1}.zip'.format(project.name, timestamp())
     bucket_name = '{0}-lambda-zips'.format(project.name)
     s3 = boto3.resource('s3')
     if not check_bucket_exists(bucket_name):
