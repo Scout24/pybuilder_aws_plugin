@@ -25,14 +25,6 @@ def zip_recursive(archive, directory, folder=""):
                           folder=os.path.join(folder, item))
 
 
-def copy_dir_content_to_ziproot(archive, directory):
-    """Put every file found in directory to root layer of the zipfile"""
-    for item in os.listdir(directory):
-        if os.path.isfile(os.path.join(directory, item)):
-            archive.write(os.path.join(directory, item),
-                          item, zipfile.ZIP_DEFLATED)
-
-
 def prepare_dependencies_dir(project, target_directory):
     """Get all dependencies from project and install them to given dir"""
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
@@ -75,7 +67,7 @@ def package_lambda_code(project, logger):
     sources = project.expand_path("$dir_source_main_python")
     zip_recursive(archive, sources)
     scripts = project.expand_path("$dir_source_main_scripts")
-    copy_dir_content_to_ziproot(archive, scripts)
+    zip_recursive(archive, scripts)
     archive.close()
     logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
 
