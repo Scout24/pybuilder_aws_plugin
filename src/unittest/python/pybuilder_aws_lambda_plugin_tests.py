@@ -12,6 +12,7 @@ from pybuilder_aws_lambda_plugin import upload_zip_to_s3
 
 
 class PackageLambdaCodeTest(TestCase):
+
     def setUp(self):
         pass
 
