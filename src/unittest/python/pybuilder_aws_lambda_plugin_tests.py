@@ -7,10 +7,33 @@ import tempfile
 import boto3
 import shutil
 import zipfile
+import datetime
 from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
-from pybuilder_aws_lambda_plugin import upload_zip_to_s3, package_lambda_code
+from pybuilder_aws_lambda_plugin import (upload_zip_to_s3,
+                                         package_lambda_code,
+                                         timestamp,
+                                         )
+
+
+class FixedDateTime(datetime.datetime):
+    """ As unfortunately datetime.datetime.now can not be mocked, since it is
+    an c-extension.  We use this derived class and override now.
+
+    http://stackoverflow.com/questions/4481954/python-trying-to-mock-datetime-date-today-but-not-working
+
+    """
+    @classmethod
+    def utcnow(cls):
+        return datetime.datetime(1970, 1, 1)
+
+
+class TestTimeStamp(TestCase):
+
+    @mock.patch('datetime.datetime', FixedDateTime)
+    def test_timestamp_format(self):
+        self.assertEqual('19700101000000', timestamp())
 
 
 class PackageLambdaCodeTest(TestCase):

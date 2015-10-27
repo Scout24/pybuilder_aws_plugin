@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-import time
 import boto3
 import zipfile
 import subprocess
 
 from pybuilder.core import description, task, depends
-from datetime import datetime
+import datetime
 from pybuilder.plugins.python.install_dependencies_plugin import as_pip_argument
 
 
@@ -41,10 +40,7 @@ def get_path_to_zipfile(project):
 
 
 def timestamp():
-    timestamp = time.time()
-    formatted_timestamp = datetime.fromtimestamp(timestamp)
-    formatted_timestamp = formatted_timestamp.strftime('%Y%m%d%H%M%S')
-    return formatted_timestamp
+    return datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
 
 
 @task
