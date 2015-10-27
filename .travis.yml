@@ -1,4 +1,6 @@
 language: python
+git:
+  depth: 9999999
 python:
   - "2.6"
   - "2.7"
