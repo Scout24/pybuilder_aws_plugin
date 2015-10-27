@@ -56,7 +56,6 @@ class PackageLambdaCodeTest(TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
-        pass
 
     @mock.patch('pybuilder_aws_lambda_plugin.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(self,
@@ -77,6 +76,7 @@ class UploadZipToS3Test(TestCase):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
         self.project = Project(basedir=self.tempdir, name='palp')
         self.project.set_property('dir_target', 'target')
+        self.project.set_property('bucket_name', 'palp-lambda-zips')
         self.dir_target = os.path.join(self.tempdir, 'target')
         os.mkdir(self.dir_target)
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')

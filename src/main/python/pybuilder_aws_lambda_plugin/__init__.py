@@ -71,7 +71,7 @@ def upload_zip_to_s3(project, logger):
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
     keyname = '{0}-{1}.zip'.format(project.name, timestamp())
-    bucket_name = '{0}-lambda-zips'.format(project.name)
+    bucket_name = project.get_mandatory_property("bucket_name")
     s3 = boto3.resource('s3')
     logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
                 format(bucket_name, keyname))
