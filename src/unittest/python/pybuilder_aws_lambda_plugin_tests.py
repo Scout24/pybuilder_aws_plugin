@@ -17,38 +17,21 @@ class PackageLambdaCodeTest(TestCase):
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
-        self.project = Project(basedir=self.tempdir, name='palp')
+        self.testdir = os.path.join(self.tempdir, 'package_lambda_code_test')
+        self.project = Project(basedir=self.testdir, name='palp')
+        shutil.copytree('src/unittest/python/package_lambda_code_test/', self.testdir)
 
         self.project.set_property('dir_target', 'target')
-        self.dir_target = os.path.join(self.tempdir, 'target')
-        os.mkdir(self.dir_target)
+        self.project.set_property('dir_source_main_python', 'src/main/python')
+        self.project.set_property('dir_source_main_scripts', 'src/main/scripts')
+
+        self.dir_target = os.path.join(self.testdir, 'target')
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
 
-        os.mkdir(os.path.join(self.dir_target, 'lambda_dependencies'))
-
-        self.project.set_property('dir_source_main_python', 'source/main/python')
-        self.dir_source_main_python = os.path.join(self.tempdir, 'source/main/python')
-        os.makedirs(self.dir_source_main_python)
-
-        with open(os.path.join(self.dir_source_main_python,
-                               'test_module_file.py'), 'wb') as fp:
-            fp.write('test_module')
-        os.mkdir(os.path.join(self.dir_source_main_python,
-                              'test_package_directory'))
-        with open(os.path.join(self.dir_source_main_python,
-                               'test_package_directory',
-                               '__init__.py'), 'wb') as fp:
-            fp.write('test_init')
-
-        self.project.set_property('dir_source_main_scripts', 'source/main/scripts')
-        self.dir_source_main_scripts = os.path.join(self.tempdir, 'source/main/scripts')
-        os.makedirs(self.dir_source_main_scripts)
-
-        with open(os.path.join(self.dir_source_main_scripts, 'script.py'), 'wb') as fp:
-            fp.write('test_script')
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
+        pass
 
     @mock.patch('pybuilder_aws_lambda_plugin.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(self,
@@ -57,7 +40,7 @@ class PackageLambdaCodeTest(TestCase):
         zf = zipfile.ZipFile(self.zipfile_name)
         expected = sorted(['test_package_directory/__init__.py',
                     'test_module_file.py',
-                    'script.py'])
+                    'test_script.py'])
         self.assertEqual(sorted(zf.namelist()), expected)
 
 
