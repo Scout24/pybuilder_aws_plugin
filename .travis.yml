@@ -10,8 +10,19 @@ python:
 install:
   - pip install pybuilder
   - pip install coveralls
+  - pip install sh
   - pyb install_dependencies
-  
+
 script: "pyb verify analyze"
 after_success:
   - coveralls --verbose
+deploy:
+  provider: pypi
+  user: immobilienscout24
+  distributions: "sdist"
+  password:
+    secure: MI5RyLb6Uxav11IDwgZPlUKwOFc6pZNtzQo8+j9lt4DDDXHwGqNGQqd/7oKfuN2v2Egm2r3X3kKc3n5rs3xMFlBJsqmU+Ezqi2QbyTs/+36044L5NNSCGfmhY+YRRauxtG+YgOTVKI09eIUNkQMOzQ3Qic22F7YRq54/TgwTWIgr/xLyd0wzHLmvZAuG/cxBxOx0DOlP3EBEfYxYEzY3wdPu7UmrbAwwQOlOIhERi2EclURlmyN12iEmPA5PRwJ71ozvJ058ziMcpctZAjvUPp0AgijwqQnsufY/nt3+zFVkHz8pq8tSWzCj98RMY7/qs/bTNHj6S3P+xn/PgfmwwP5uvQOAKxECQOV6FVNiQDXa3kR39HddBonFfOXzW/eqw0D7ZdZzRiSjZ4JCjQNBntW5fQzc2Qp/K0qQeMOgBMpBtCI1JdSe9LICSXCKbujiE1Qq6/JOOwjAlMEasW+wmC4UQI2FXgS6wIKJ5XqzzNC1MO6GN0ZNDLwGZofE24zsQBX0SEN8E1OXvDXdKJlyxbCcX33nTJv7rhhVaikYJJSr/YC9sH9jhh3G7Y1ff2JAhuGgIOGKYevElHSI+4Ghj5XirFWg0W3HQutqoSCITUaKFK7gVi5mpfk5yh5jz4tqj0zLkzc5xd0YgVdGuxL65ZlZFIhG58rInUI2kcGX4/0=
+  on:
+    repo: ImmobilienScout24/pybuilder_aws_lambda_plugin
+    python: '3.5'
+    branch: master
