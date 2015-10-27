@@ -22,7 +22,7 @@ before_deploy:
   - pyb package
 deploy:
   provider: pypi
-  user: immobilienscout24
+  user: Immobilienscout24
   distributions: "sdist"
   skip_cleanup: true
   password:
