@@ -80,7 +80,7 @@ class UploadZipToS3Test(TestCase):
         self.dir_target = os.path.join(self.tempdir, 'target')
         os.mkdir(self.dir_target)
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
-        self.test_data = 'testdata'
+        self.test_data = b'testdata'
         with open(self.zipfile_name, 'wb') as fp:
             fp.write(self.test_data)
 
