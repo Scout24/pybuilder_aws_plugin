@@ -18,7 +18,6 @@ after_success:
   - coveralls --verbose
 before_deploy:
   - pyb package
-  - cd target/dist/$( ls target/dist/)
 deploy:
   provider: pypi
   user: immobilienscout24
