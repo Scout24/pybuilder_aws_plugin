@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin.svg?branch=master
+    :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin
+
 ===========================
 pybuilder_aws_lambda_plugin
 ===========================
