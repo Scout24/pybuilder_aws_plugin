@@ -25,7 +25,7 @@ def zip_recursive(archive, directory, folder=""):
                           folder=os.path.join(folder, item))
 
 
-def prepare_dependencies_dir(project, target_directory):
+def prepare_dependencies_dir(project, target_directory):  # pragma: nocover
     """Get all dependencies from project and install them to given dir"""
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
     pip_cmd = 'pip install --target {0} {1}'
