@@ -6,6 +6,10 @@
   :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_lambda_plugin?branch=master
 
 
+.. image:: https://badge.fury.io/py/pybuilder_aws_lambda_plugin.svg
+    :target: https://badge.fury.io/py/pybuilder_aws_lambda_plugin
+
+
 ===========================
 pybuilder_aws_lambda_plugin
 ===========================
