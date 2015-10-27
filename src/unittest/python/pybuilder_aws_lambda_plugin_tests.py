@@ -19,15 +19,17 @@ class PackageLambdaCodeTest(TestCase):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
         self.testdir = os.path.join(self.tempdir, 'package_lambda_code_test')
         self.project = Project(basedir=self.testdir, name='palp')
-        shutil.copytree('src/unittest/python/package_lambda_code_test/', self.testdir)
+        shutil.copytree('src/unittest/python/package_lambda_code_test/',
+                        self.testdir)
 
         self.project.set_property('dir_target', 'target')
-        self.project.set_property('dir_source_main_python', 'src/main/python')
-        self.project.set_property('dir_source_main_scripts', 'src/main/scripts')
+        self.project.set_property('dir_source_main_python',
+                                  'src/main/python')
+        self.project.set_property('dir_source_main_scripts',
+                                  'src/main/scripts')
 
         self.dir_target = os.path.join(self.testdir, 'target')
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
-
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
