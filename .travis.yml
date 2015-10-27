@@ -14,16 +14,15 @@ python:
   - "pypy"
   - "pypy3"
 install:
-  - pip install pybuilder
-  - pip install coveralls
-  - pyb install_dependencies
+  - pip install pybuilder coveralls
+  - pyb -v install_dependencies
 
 script:
-  - pyb verify analyze
+  - pyb -v -X verify analyze
 after_success:
   - coveralls --verbose
 before_deploy:
-  - pyb package
+  - pyb -v -X package
 deploy:
   provider: pypi
   user: Immobilienscout24
