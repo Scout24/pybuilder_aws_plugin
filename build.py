@@ -26,6 +26,7 @@ def set_properties(project):
     project.depends_on("boto3")
     project.build_depends_on("mock")
     project.build_depends_on("moto")
+    project.set_property('coverage_break_build', False)
     project.set_property('distutils_classifiers', [
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
