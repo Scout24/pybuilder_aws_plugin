@@ -16,7 +16,6 @@ python:
 install:
   - pip install pybuilder
   - pip install coveralls
-  - pip install sh
   - pyb install_dependencies
 
 script:
