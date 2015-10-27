@@ -1,6 +1,11 @@
 .. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin.svg?branch=master
     :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin
 
+
+.. image:: https://coveralls.io/repos/ImmobilienScout24/pybuilder_aws_lambda_plugin/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_lambda_plugin?branch=master
+
+
 ===========================
 pybuilder_aws_lambda_plugin
 ===========================
