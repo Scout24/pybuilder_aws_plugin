@@ -40,11 +40,6 @@ def get_path_to_zipfile(project):
                         "{0}.zip".format(project.name))
 
 
-def check_bucket_exists(bucket_name):
-    s3 = boto3.resource('s3')
-    return bucket_name in [b.name for b in s3.buckets.all()]
-
-
 def timestamp():
     timestamp = time.time()
     formatted_timestamp = datetime.fromtimestamp(timestamp)
