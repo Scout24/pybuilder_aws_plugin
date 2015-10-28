@@ -24,11 +24,14 @@ def zip_recursive(archive, directory, folder=""):
                           folder=os.path.join(folder, item))
 
 
-def prepare_dependencies_dir(project, target_directory):  # pragma: nocover
+def prepare_dependencies_dir(project, target_directory, excludes=None):  # pragma: nocover
     """Get all dependencies from project and install them to given dir"""
+    excludes = excludes or []
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
     pip_cmd = 'pip install --target {0} {1}'
     for dependency in dependencies:
+        if dependency in excludes:
+            continue
         cmd = pip_cmd.format(target_directory, dependency).split()
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         stdout, _ = process.communicate()
@@ -49,8 +52,11 @@ def timestamp():
 def package_lambda_code(project, logger):
     dir_target = project.expand_path("$dir_target")
     lambda_dependencies_dir = os.path.join(dir_target, "lambda_dependencies")
+    excludes = ['boto3']
     logger.info("Going to prepare dependencies.")
-    prepare_dependencies_dir(project, lambda_dependencies_dir)
+    prepare_dependencies_dir(project,
+                             lambda_dependencies_dir,
+                             excludes=excludes)
     logger.info("Going to assemble the lambda-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
@@ -65,7 +71,9 @@ def package_lambda_code(project, logger):
 
 @init
 def initialize_upload_zip_to_s3(project):
-    project.set_property('lambda_file_access_control', 'bucket-owner-full-control')
+    project.set_property('lambda_file_access_control',
+                         'bucket-owner-full-control')
+
 
 @task
 @description("Upload a packaged lambda-zip to S3")
@@ -79,7 +87,7 @@ def upload_zip_to_s3(project, logger):
     s3 = boto3.resource('s3')
     logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
                 format(bucket_name, keyname))
+    acl = project.get_property('lambda_file_access_control')
     s3.Bucket(bucket_name).put_object(Key=keyname,
                                       Body=data,
-                                      ACL=project.get_property('lambda_file_access_control'))
-
+                                      ACL=acl)
