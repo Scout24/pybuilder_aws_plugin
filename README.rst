@@ -1,10 +1,8 @@
 .. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin.svg?branch=master
     :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin
 
-
 .. image:: https://coveralls.io/repos/ImmobilienScout24/pybuilder_aws_lambda_plugin/badge.svg?branch=master&service=github
-  :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_lambda_plugin?branch=master
-
+    :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_lambda_plugin?branch=master
 
 .. image:: https://badge.fury.io/py/pybuilder_aws_lambda_plugin.svg
     :target: https://badge.fury.io/py/pybuilder_aws_lambda_plugin
@@ -17,27 +15,69 @@ pybuilder_aws_lambda_plugin
 PyBuilder plugin to handle packaging and uploading Python AWS Lambda code.
 
 How to use the Plugin
----------------------
-
+=====================
 Add plugin dependency to your ``build.py``:
 
 .. code:: python
 
     use_plugin('pypi:pybuilder_aws_lambda_plugin')
 
-And ...
+After this you have 2 additional tasks, which are explained below.
+
+@Task: package_lambda_code
+--------------------------
+This task assembles the zip file which will be uploaded to S3 with the second
+task. What is this task doing in detail?
+
+Package all own modules
+~~~~~~~~~~~~~~~~~~~~~~~
+All modules which are found in ``src/main/python/`` where put directly into the
+temporary folder, which will zipped later.
+
+Package all dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~
+Every entry in ``build.py`` with **depends_on** is installed into the zip
+file. The target path for ``pip install`` points directly to the
+temporary folder, which will then be zipped.
+
+Package all script files
+~~~~~~~~~~~~~~~~~~~~~~~~
+The content in the scripts folder (``src/main/scripts``) of an pybuilder
+project is normally intended to go to ``/usr/bin``. This plugin sees this folder
+as a folder with script(s) including lambda handler functions. Therefore all
+files under this folder is put at the root layer (``/``) of the zip file.
+
+@Task: upload_zip_to_s3
+-----------------------
+This task uploads the generated zip to a S3 bucket. The bucket name is to be
+set as follows in ``build.py``:
 
 .. code:: console
 
-    $ pyb package_lambda_code
-    ...
-    $ pyb upload_zip_to_s3
-    ...
+    project.set_property('bucket_name', 'my_lambda_bucket')
 
+The default acl for zips to be uploaded is ``bucket-owner-full-control``. But
+if you need another acl you can overwrite this as follows in ``build.py``:
+
+.. code:: console
+
+    project.set_property('lambda_file_access_control', '<wished_acl>')
+
+Possible acl values are:
+
+* private
+* public-read
+* public-read-write
+* authenticated-read
+* bucket-owner-read
+* bucket-owner-full-control
+
+Further the plugin assumes that you already have a shell with enabled aws
+access (exported keys or .boto or ...). For that take a look at
+e.g. `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_
 
 Licence
--------
-
+=======
 Copyright 2015 Immobilienscout24 GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -50,4 +90,3 @@ Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
-
