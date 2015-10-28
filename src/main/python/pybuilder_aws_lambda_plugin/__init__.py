@@ -52,7 +52,7 @@ def timestamp():
 def package_lambda_code(project, logger):
     dir_target = project.expand_path("$dir_target")
     lambda_dependencies_dir = os.path.join(dir_target, "lambda_dependencies")
-    excludes = ['boto3']
+    excludes = ['boto', 'boto3']
     logger.info("Going to prepare dependencies.")
     prepare_dependencies_dir(project,
                              lambda_dependencies_dir,
