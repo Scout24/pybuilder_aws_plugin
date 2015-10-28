@@ -6,7 +6,7 @@ import boto3
 import zipfile
 import subprocess
 
-from pybuilder.core import description, task, depends
+from pybuilder.core import description, task, depends, init
 import datetime
 from pybuilder.plugins.python.install_dependencies_plugin import as_pip_argument
 
@@ -63,6 +63,10 @@ def package_lambda_code(project, logger):
     logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
 
 
+@init
+def initialize_upload_zip_to_s3(project):
+    project.set_property('lambda_file_access_control', 'bucket-owner-full-control')
+
 @task
 @description("Upload a packaged lambda-zip to S3")
 @depends('package_lambda_code')
@@ -77,5 +81,5 @@ def upload_zip_to_s3(project, logger):
                 format(bucket_name, keyname))
     s3.Bucket(bucket_name).put_object(Key=keyname,
                                       Body=data,
-                                      ACL=project.get_mandatory_property("lambda_file_access_control"))
+                                      ACL=project.get_property('lambda_file_access_control'))
 
