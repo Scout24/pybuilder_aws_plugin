@@ -77,5 +77,5 @@ def upload_zip_to_s3(project, logger):
                 format(bucket_name, keyname))
     s3.Bucket(bucket_name).put_object(Key=keyname,
                                       Body=data,
-                                      ACL='bucket-owner-full-control')
+                                      ACL=project.get_mandatory_property("lambda_file_access_control"))
 

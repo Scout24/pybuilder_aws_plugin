@@ -77,6 +77,7 @@ class UploadZipToS3Test(TestCase):
         self.project = Project(basedir=self.tempdir, name='palp')
         self.project.set_property('dir_target', 'target')
         self.project.set_property('bucket_name', 'palp-lambda-zips')
+        self.project.set_property('lambda_file_access_control', 'bucket-owner-full-control')
         self.dir_target = os.path.join(self.tempdir, 'target')
         os.mkdir(self.dir_target)
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
