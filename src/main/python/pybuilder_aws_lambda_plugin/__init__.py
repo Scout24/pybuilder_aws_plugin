@@ -60,7 +60,8 @@ def package_lambda_code(project, logger):
     logger.info("Going to assemble the lambda-zip.")
     path_to_zipfile = get_path_to_zipfile(project)
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
-    zip_recursive(archive, lambda_dependencies_dir)
+    if os.path.isdir(lambda_dependencies_dir):
+        zip_recursive(archive, lambda_dependencies_dir)
     sources = project.expand_path("$dir_source_main_python")
     zip_recursive(archive, sources)
     scripts = project.expand_path("$dir_source_main_scripts")
