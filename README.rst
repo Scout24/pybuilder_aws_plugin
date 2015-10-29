@@ -45,7 +45,7 @@ Package all script files
 The content in the scripts folder (``src/main/scripts``) of an pybuilder
 project is normally intended to go to ``/usr/bin``. This plugin sees this folder
 as a folder with script(s) including lambda handler functions. Therefore all
-files under this folder is put at the root layer (``/``) of the zip file.
+files under this folder are put at the root layer (``/``) of the zip file.
 
 @Task: upload_zip_to_s3
 -----------------------
