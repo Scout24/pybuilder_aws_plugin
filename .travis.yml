@@ -1,10 +1,4 @@
 language: python
-# Travis will clone only 50 commits by default. This project however uses the
-# number of commits to determine the version number. Hence we need ALL the
-# commits. We can't disable a shallow clone, so instead we max out the clone
-# depth.
-git:
-  depth: 9999999
 python:
   - "2.6"
   - "2.7"
@@ -13,6 +7,11 @@ python:
   - "3.5"
   - "pypy"
   - "pypy3"
+# Travis will clone only 50 commits by default. This project however uses the
+# number of commits to determine the version number. Hence we need ALL the
+# commits. This will make the lone unshallow.
+before_install:
+  - git fetch --unshallow
 install:
   - pip install pybuilder coveralls
   - pyb -v install_dependencies
