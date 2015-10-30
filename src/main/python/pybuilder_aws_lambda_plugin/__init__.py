@@ -43,7 +43,7 @@ def get_path_to_zipfile(project):
 
 
 def timestamp():
-    return datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    return datetime.datetime.utcnow().strftime('%Y-%m-%d-%H%M%S')
 
 
 @task

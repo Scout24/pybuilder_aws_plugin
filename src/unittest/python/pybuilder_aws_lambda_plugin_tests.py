@@ -33,7 +33,7 @@ class TestTimeStamp(TestCase):
 
     @mock.patch('datetime.datetime', FixedDateTime)
     def test_timestamp_format(self):
-        self.assertEqual('19700101000000', timestamp())
+        self.assertEqual('1970-01-01-000000', timestamp())
 
 
 class PackageLambdaCodeTest(TestCase):
