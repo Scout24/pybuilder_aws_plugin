@@ -7,7 +7,6 @@ import tempfile
 import boto3
 import shutil
 import zipfile
-import datetime
 from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
