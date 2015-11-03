@@ -11,29 +11,8 @@ import datetime
 from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
-from pybuilder_aws_lambda_plugin import (upload_zip_to_s3,
-                                         package_lambda_code,
-                                         timestamp,
-                                         )
-
-
-class FixedDateTime(datetime.datetime):
-    """ As unfortunately datetime.datetime.now can not be mocked, since it is
-    an c-extension.  We use this derived class and override now.
-
-    http://stackoverflow.com/questions/4481954/python-trying-to-mock-datetime-date-today-but-not-working
-
-    """
-    @classmethod
-    def utcnow(cls):
-        return datetime.datetime(1970, 1, 1)
-
-
-class TestTimeStamp(TestCase):
-
-    @mock.patch('datetime.datetime', FixedDateTime)
-    def test_timestamp_format(self):
-        self.assertEqual('1970-01-01-000000', timestamp())
+from pybuilder_aws_lambda_plugin import (
+    upload_zip_to_s3, package_lambda_code)
 
 
 class PackageLambdaCodeTest(TestCase):
@@ -74,10 +53,11 @@ class UploadZipToS3Test(TestCase):
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
-        self.project = Project(basedir=self.tempdir, name='palp')
+        self.project = Project(basedir=self.tempdir, name='palp', version=123)
         self.project.set_property('dir_target', 'target')
         self.project.set_property('bucket_name', 'palp-lambda-zips')
-        self.project.set_property('lambda_file_access_control', 'bucket-owner-full-control')
+        self.project.set_property(
+            'lambda_file_access_control', 'bucket-owner-full-control')
         self.dir_target = os.path.join(self.tempdir, 'target')
         os.mkdir(self.dir_target)
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
@@ -89,9 +69,7 @@ class UploadZipToS3Test(TestCase):
         shutil.rmtree(self.tempdir)
 
     @mock_s3
-    @mock.patch('pybuilder_aws_lambda_plugin.timestamp')
-    def test_if_file_was_uploaded_to_s3(self, timestamp_mock):
-        timestamp_mock.return_value = '197001010000'
+    def test_if_file_was_uploaded_to_s3(self):
         s3 = boto3.resource('s3')
         s3.create_bucket(Bucket='palp-lambda-zips')
 
@@ -99,9 +77,8 @@ class UploadZipToS3Test(TestCase):
 
         s3_object = [o for o in s3.Bucket('palp-lambda-zips').objects.all()][0]
         self.assertEqual(s3_object.bucket_name, 'palp-lambda-zips')
-        self.assertEqual(s3_object.key, 'palp-197001010000.zip')
+        self.assertEqual(s3_object.key, '123/palp.zip')
 
     @mock_s3
-    @mock.patch('pybuilder_aws_lambda_plugin.timestamp')
-    def test_handle_failure_if_no_such_bucket(self, timestamp_mock):
+    def test_handle_failure_if_no_such_bucket(self):
         pass
