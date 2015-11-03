@@ -52,6 +52,12 @@ def upload_helper(project, logger, bucket_name, keyname, data):
                                       ACL=acl)
 
 
+@init
+def initialize_upload_zip_to_s3(project):
+    project.set_property('lambda_file_access_control',
+                         'bucket-owner-full-control')
+
+
 @task(description="Package the modules, dependencies and scripts into a lambda-zip")
 @depends('package')
 def package_lambda_code(project, logger):
@@ -73,12 +79,6 @@ def package_lambda_code(project, logger):
     zip_recursive(archive, scripts)
     archive.close()
     logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
-
-
-@init
-def initialize_upload_zip_to_s3(project):
-    project.set_property('lambda_file_access_control',
-                         'bucket-owner-full-control')
 
 
 @task(description="Upload a packaged lambda-zip to S3")
