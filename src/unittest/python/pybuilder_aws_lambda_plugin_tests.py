@@ -75,9 +75,11 @@ class UploadZipToS3Test(TestCase):
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
-        s3_object = [o for o in s3.Bucket('palp-lambda-zips').objects.all()][0]
-        self.assertEqual(s3_object.bucket_name, 'palp-lambda-zips')
-        self.assertEqual(s3_object.key, '123/palp.zip')
+        s3_object_list = [
+            o for o in s3.Bucket('palp-lambda-zips').objects.all()]
+        self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
+        self.assertEqual(s3_object_list[0].key, 'latest/palp.zip')
+        self.assertEqual(s3_object_list[1].key, 'v123/palp.zip')
 
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):

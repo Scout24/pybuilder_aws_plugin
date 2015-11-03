@@ -42,6 +42,16 @@ def get_path_to_zipfile(project):
                         "{0}.zip".format(project.name))
 
 
+def upload_helper(project, logger, bucket_name, keyname, data):
+    s3 = boto3.resource('s3')
+    logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
+                format(bucket_name, keyname))
+    acl = project.get_property('lambda_file_access_control')
+    s3.Bucket(bucket_name).put_object(Key=keyname,
+                                      Body=data,
+                                      ACL=acl)
+
+
 @task
 @description("Package the modules, dependencies and scripts into a lambda-zip")
 @depends('package')
@@ -80,12 +90,8 @@ def upload_zip_to_s3(project, logger):
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
     # keyname = '{0}-{1}.zip'.format(project.name, timestamp())
-    keyname = '{0}/{1}.zip'.format(project.version, project.name)
+    keyname = 'v{0}/{1}.zip'.format(project.version, project.name)
     bucket_name = project.get_mandatory_property("bucket_name")
-    s3 = boto3.resource('s3')
-    logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
-                format(bucket_name, keyname))
-    acl = project.get_property('lambda_file_access_control')
-    s3.Bucket(bucket_name).put_object(Key=keyname,
-                                      Body=data,
-                                      ACL=acl)
+    upload_helper(project, logger, bucket_name, keyname, data)
+    upload_helper(
+        project, logger, bucket_name, 'latest/{0}.zip'.format(project.name), data)

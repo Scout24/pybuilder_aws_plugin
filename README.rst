@@ -76,6 +76,12 @@ Further the plugin assumes that you already have a shell with enabled aws
 access (exported keys or .boto or ...). For that take a look at
 e.g. `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_
 
+The uploaded files will be placed in a directory with the version number,
+and in a `latest/` directory, such as:
+
+- `v123/projectname.zip`
+- `latest/projectname.zip`
+
 Licence
 =======
 Copyright 2015 Immobilienscout24 GmbH
