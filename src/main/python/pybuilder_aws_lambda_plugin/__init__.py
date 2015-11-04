@@ -57,7 +57,7 @@ def initialize_upload_zip_to_s3(project):
                          'bucket-owner-full-control')
 
 
-@task(description="Package the modules, dependencies and scripts into a lambda-zip")
+@task('package_lambda_code', description="Package the modules, dependencies and scripts into a lambda-zip")
 @depends('package')
 def package_lambda_code(project, logger):
     dir_target = project.expand_path("$dir_target")
@@ -80,7 +80,7 @@ def package_lambda_code(project, logger):
     logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
 
 
-@task(description="Upload a packaged lambda-zip to S3")
+@task('upload_zip_to_s3', description="Upload a packaged lambda-zip to S3")
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
