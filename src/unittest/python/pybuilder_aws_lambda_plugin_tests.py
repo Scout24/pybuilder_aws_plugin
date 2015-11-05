@@ -11,7 +11,18 @@ from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
 from pybuilder_aws_lambda_plugin import (
-    upload_zip_to_s3, package_lambda_code)
+    upload_zip_to_s3, package_lambda_code, initialize_plugin)
+
+
+class TestInitializePlugin(TestCase):
+
+    def test_initialize_sets_variables_correctly(self):
+        project = Project('.')
+        initialize_plugin(project)
+        self.assertEqual(project.get_property('lambda_file_access_control'),
+                        'bucket-owner-full-control')
+        self.assertEqual(project.get_property('bucket_prefix'),
+                        '')
 
 
 class PackageLambdaCodeTest(TestCase):
@@ -57,6 +68,7 @@ class UploadZipToS3Test(TestCase):
         self.project.set_property('bucket_name', 'palp-lambda-zips')
         self.project.set_property(
             'lambda_file_access_control', 'bucket-owner-full-control')
+        self.project.set_property('bucket_prefix', '')
         self.dir_target = os.path.join(self.tempdir, 'target')
         os.mkdir(self.dir_target)
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
@@ -64,21 +76,35 @@ class UploadZipToS3Test(TestCase):
         with open(self.zipfile_name, 'wb') as fp:
             fp.write(self.test_data)
 
+        self.my_mock_s3 = mock_s3()
+        self.my_mock_s3.start()
+        self.s3 = boto3.resource('s3')
+        self.s3.create_bucket(Bucket='palp-lambda-zips')
+
     def tearDown(self):
         shutil.rmtree(self.tempdir)
+        self.my_mock_s3.stop()
 
-    @mock_s3
     def test_if_file_was_uploaded_to_s3(self):
-        s3 = boto3.resource('s3')
-        s3.create_bucket(Bucket='palp-lambda-zips')
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
         s3_object_list = [
-            o for o in s3.Bucket('palp-lambda-zips').objects.all()]
+            o for o in self.s3.Bucket('palp-lambda-zips').objects.all()]
         self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
         self.assertEqual(s3_object_list[0].key, 'latest/palp.zip')
         self.assertEqual(s3_object_list[1].key, 'v123/palp.zip')
+
+    def test_if_file_was_uploaded_to_s3_with_bucket_prefix(self):
+        self.project.set_property('bucket_prefix', 'palp/')
+
+        upload_zip_to_s3(self.project, mock.MagicMock(Logger))
+
+        s3_object_list = [
+            o for o in self.s3.Bucket('palp-lambda-zips').objects.all()]
+        self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
+        self.assertEqual(s3_object_list[0].key, 'palp/latest/palp.zip')
+        self.assertEqual(s3_object_list[1].key, 'palp/v123/palp.zip')
 
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):

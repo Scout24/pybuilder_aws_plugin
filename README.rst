@@ -82,6 +82,18 @@ and in a `latest/` directory, such as:
 - `v123/projectname.zip`
 - `latest/projectname.zip`
 
+You can use the property ``bucket_prefix`` to add a prefix to the uploaded
+files. For example:
+
+.. code:: python
+
+   project.set_property('bucket_prefix', 'my_lambda/')
+
+This will upload the files to the following files:
+
+- `my_lambda/v123/projectname.zip`
+- `my_lambda/latest/projectname.zip`
+
 Licence
 =======
 Copyright 2015 Immobilienscout24 GmbH
