@@ -55,6 +55,7 @@ def upload_helper(project, logger, bucket_name, keyname, data):
 def initialize_upload_zip_to_s3(project):
     project.set_property('lambda_file_access_control',
                          'bucket-owner-full-control')
+    project.set_property('bucket_prefix', '')
 
 
 @task('package_lambda_code', description="Package the modules, dependencies and scripts into a lambda-zip")
@@ -86,8 +87,9 @@ def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
-    keyname_version = 'v{0}/{1}.zip'.format(project.version, project.name)
-    keyname_latest = 'latest/{0}.zip'.format(project.name)
+    bucket_prefix = project.get_property("bucket_prefix")
     bucket_name = project.get_mandatory_property("bucket_name")
+    keyname_version = '{0}v{1}/{2}.zip'.format(bucket_prefix, project.version, project.name)
+    keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
     upload_helper(project, logger, bucket_name, keyname_version, data)
     upload_helper(project, logger, bucket_name, keyname_latest, data)
