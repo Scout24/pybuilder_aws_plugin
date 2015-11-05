@@ -11,7 +11,18 @@ from moto import mock_s3
 from unittest import TestCase
 from pybuilder.core import Project, Logger
 from pybuilder_aws_lambda_plugin import (
-    upload_zip_to_s3, package_lambda_code)
+    upload_zip_to_s3, package_lambda_code, initialize_plugin)
+
+
+class TestInitializePlugin(TestCase):
+
+    def test_initialize_sets_variables_correctly(self):
+        project = Project('.')
+        initialize_plugin(project)
+        self.assertEqual(project.get_property('lambda_file_access_control'),
+                        'bucket-owner-full-control')
+        self.assertEqual(project.get_property('bucket_prefix'),
+                        '')
 
 
 class PackageLambdaCodeTest(TestCase):

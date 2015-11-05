@@ -52,7 +52,7 @@ def upload_helper(project, logger, bucket_name, keyname, data):
 
 
 @init
-def initialize_upload_zip_to_s3(project):
+def initialize_plugin(project):
     project.set_property('lambda_file_access_control',
                          'bucket-owner-full-control')
     project.set_property('bucket_prefix', '')
