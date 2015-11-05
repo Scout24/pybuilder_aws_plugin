@@ -86,9 +86,8 @@ def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
-    # keyname = '{0}-{1}.zip'.format(project.name, timestamp())
-    keyname = 'v{0}/{1}.zip'.format(project.version, project.name)
+    keyname_version = 'v{0}/{1}.zip'.format(project.version, project.name)
+    keyname_latest = 'latest/{0}.zip'.format(project.name)
     bucket_name = project.get_mandatory_property("bucket_name")
-    upload_helper(project, logger, bucket_name, keyname, data)
-    upload_helper(
-        project, logger, bucket_name, 'latest/{0}.zip'.format(project.name), data)
+    upload_helper(project, logger, bucket_name, keyname_version, data)
+    upload_helper(project, logger, bucket_name, keyname_latest, data)
