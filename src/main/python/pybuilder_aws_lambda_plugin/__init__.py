@@ -46,9 +46,13 @@ def upload_helper(project, logger, bucket_name, keyname, data):
     logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
                 format(bucket_name, keyname))
     acl = project.get_property('lambda_file_access_control')
+    request_payer = {}
+    if project.get_property("requester_pays"):
+        request_payer["RequestPayer"] = "requester"
     s3.Bucket(bucket_name).put_object(Key=keyname,
                                       Body=data,
-                                      ACL=acl)
+                                      ACL=acl,
+                                      **request_payer)
 
 
 @init

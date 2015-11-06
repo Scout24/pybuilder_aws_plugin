@@ -106,6 +106,21 @@ class UploadZipToS3Test(TestCase):
         self.assertEqual(s3_object_list[0].key, 'palp/latest/palp.zip')
         self.assertEqual(s3_object_list[1].key, 'palp/v123/palp.zip')
 
+    def test_if_upload_to_s3_with_requester_pays_parameter(self):
+        self.project.set_property("requester_pays", True)
+        self.client = boto3.client("s3")
+        self.client.put_bucket_request_payment(Bucket='palp-lambda-zips',
+                                           RequestPaymentConfiguration={
+                                            'Payer': 'Requester'})
+
+        upload_zip_to_s3(self.project, mock.MagicMock(Logger))
+
+        s3_object_list = [
+            o for o in self.s3.Bucket('palp-lambda-zips').objects.all()]
+        self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
+        self.assertEqual(s3_object_list[0].key, 'latest/palp.zip')
+        self.assertEqual(s3_object_list[1].key, 'v123/palp.zip')
+
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
         pass
