@@ -118,7 +118,7 @@ class UploadZipToS3Test(TestCase):
         pass
 
 
-if sys.version_info[0:2] >= (2, 7):
+if sys.version_info[0:2] == (2, 7):
     class UploadJSONToS3(TestCase):
 
         def setUp(self):
