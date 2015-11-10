@@ -122,6 +122,28 @@ tupels:
             ...
         ])
 
+The uploaded files will be placed in a directory with the version number,
+and in a `latest/` directory, such as:
+
+- `v123/filename1.json`
+- `v123/filename2.json`
+- `latest/filename1.json`
+- `latest/filename2.json`
+
+You can use the property ``template_key_prefix`` to add a prefix to the uploaded
+files. For example:
+
+.. code:: python
+
+   project.set_property('template_key_prefix', 'my_lambda/')
+
+This will upload the files to the following files:
+
+- `my_lambda/v123/filename1.json`
+- `my_lambda/v123/filename2.json`
+- `my_lambda/latest/filename1.json`
+- `my_lambda/latest/filename2.json`
+
 Licence
 =======
 Copyright 2015 Immobilienscout24 GmbH
