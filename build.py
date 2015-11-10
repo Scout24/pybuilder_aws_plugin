@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #   -*- coding: utf-8 -*-
+import sys
 from pybuilder.core import Author, init, use_plugin
 from pybuilder.vcs import VCSRevision
 
@@ -26,6 +27,8 @@ url = 'https://github.com/ImmobilienScout24/pybuilder_aws_lambda_plugin'
 def set_properties(project):
     project.set_property('install_dependencies_upgrade', True)
     project.depends_on("boto3")
+    if sys.version_info[0:2] >= (2, 7):
+        project.depends_on('cfn-sphere')
     project.build_depends_on("mock")
     project.build_depends_on("moto")
     project.set_property('coverage_break_build', False)
