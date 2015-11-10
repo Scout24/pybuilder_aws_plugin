@@ -114,6 +114,7 @@ To define the templates you wish to be uploaded set the property as a list of
 tupels:
 
 .. code:: console
+
     project.setProperty('template_files',
         [
             ('path1','filename1'),
