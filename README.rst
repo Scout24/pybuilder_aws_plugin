@@ -94,6 +94,33 @@ This will upload the files to the following files:
 - `my_lambda/v123/projectname.zip`
 - `my_lambda/latest/projectname.zip`
 
+@Task: upload_json_to_s3
+-----------------------
+This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
+The bucket name is to be set as follows in ``build.py``:
+
+.. code:: console
+
+    project.set_property('bucket_name', 'my_lambda_bucket')
+
+The default acl for JSON files to be uploaded is ``bucket-owner-full-control``.
+But if you need another acl you can overwrite this as follows in ``build.py``:
+
+.. code:: console
+
+    project.set_property('template_file_access_control', '<wished_acl>')
+
+To define the templates you wish to be uploaded set the property as a list of
+tupels:
+
+.. code:: console
+    project.setProperty('template_files',
+        [
+            ('path1','filename1'),
+            ('path2','filename2'),
+            ...
+        ])
+
 Licence
 =======
 Copyright 2015 Immobilienscout24 GmbH
