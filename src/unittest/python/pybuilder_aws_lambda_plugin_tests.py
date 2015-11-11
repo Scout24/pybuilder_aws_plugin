@@ -14,7 +14,7 @@ from pybuilder.core import Project, Logger
 from pybuilder_aws_lambda_plugin import (
     upload_zip_to_s3, package_lambda_code, initialize_plugin)
 if sys.version_info[0:2] == (2, 7):
-    from pybuilder_aws_lambda_plugin import upload_json_to_s3
+    from pybuilder_aws_lambda_plugin import upload_cfn_to_s3
 
 
 class TestInitializePlugin(TestCase):
@@ -141,8 +141,8 @@ if sys.version_info[0:2] == (2, 7):
             self.s3 = boto3.resource('s3')
             self.s3.create_bucket(Bucket=self.bucket_name)
 
-        def test_upload_json_fils(self):
-            upload_json_to_s3(self.project, mock.MagicMock(Logger))
+        def test_upload_cfn_fils(self):
+            upload_cfn_to_s3(self.project, mock.MagicMock(Logger))
             s3_object_list = [
                 o for o in self.s3.Bucket(self.bucket_name).objects.all()]
 
