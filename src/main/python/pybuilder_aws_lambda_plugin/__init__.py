@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
-import boto3
 import zipfile
 import subprocess
 
+from helpers import upload_helper
 from pybuilder.core import task, depends, init
-from pybuilder.plugins.python.install_dependencies_plugin import as_pip_argument
+from pybuilder.plugins.python.install_dependencies_plugin import (
+    as_pip_argument)
 
 
 def zip_recursive(archive, directory, folder=""):
@@ -41,15 +42,6 @@ def get_path_to_zipfile(project):
                         "{0}.zip".format(project.name))
 
 
-def upload_helper(logger, bucket_name, keyname, data, acl):
-    s3 = boto3.resource('s3')
-    logger.info("Uploading lambda-zip to bucket: '{0}' as key: '{1}'".
-                format(bucket_name, keyname))
-    s3.Bucket(bucket_name).put_object(Key=keyname,
-                                      Body=data,
-                                      ACL=acl)
-
-
 @init
 def initialize_plugin(project):
     project.set_property('lambda_file_access_control',
@@ -62,37 +54,37 @@ def initialize_plugin(project):
 
 
 @task('package_lambda_code',
-      description="Package the modules, dependencies and scripts into a lambda-zip")
+      description='Package the modules, dependencies and scripts into a '
+      'lambda-zip')
 @depends('package')
 def package_lambda_code(project, logger):
-    dir_target = project.expand_path("$dir_target")
-    lambda_dependencies_dir = os.path.join(dir_target, "lambda_dependencies")
+    dir_target = project.expand_path('$dir_target')
+    lambda_dependencies_dir = os.path.join(dir_target, 'lambda_dependencies')
     excludes = ['boto', 'boto3']
-    logger.info("Going to prepare dependencies.")
-    prepare_dependencies_dir(project,
-                             lambda_dependencies_dir,
-                             excludes=excludes)
-    logger.info("Going to assemble the lambda-zip.")
+    logger.info('Going to prepare dependencies.')
+    prepare_dependencies_dir(
+        project, lambda_dependencies_dir, excludes=excludes)
+    logger.info('Going to assemble the lambda-zip.')
     path_to_zipfile = get_path_to_zipfile(project)
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
     if os.path.isdir(lambda_dependencies_dir):
         zip_recursive(archive, lambda_dependencies_dir)
-    sources = project.expand_path("$dir_source_main_python")
+    sources = project.expand_path('$dir_source_main_python')
     zip_recursive(archive, sources)
-    scripts = project.expand_path("$dir_source_main_scripts")
+    scripts = project.expand_path('$dir_source_main_scripts')
     zip_recursive(archive, scripts)
     archive.close()
-    logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
+    logger.info('Lambda zip is available at: "{0}".'.format(path_to_zipfile))
 
 
-@task('upload_zip_to_s3', description="Upload a packaged lambda-zip to S3")
+@task('upload_zip_to_s3', description='Upload a packaged lambda-zip to S3')
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
-    bucket_prefix = project.get_property("bucket_prefix")
-    bucket_name = project.get_mandatory_property("bucket_name")
+    bucket_prefix = project.get_property('bucket_prefix')
+    bucket_name = project.get_mandatory_property('bucket_name')
     keyname_version = '{0}v{1}/{2}.zip'.format(
         bucket_prefix, project.version, project.name)
     keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
@@ -101,29 +93,5 @@ def upload_zip_to_s3(project, logger):
     upload_helper(logger, bucket_name, keyname_latest, data, acl)
 
 if sys.version_info[0:2] == (2, 7):
-    @task('upload_cfn_to_s3',
-          description="Convert & upload CloudFormation templates in JSON "
-          "created out of the CFN-Sphere template YAML files")
-    def upload_cfn_to_s3(project, logger):
-        from cfn_sphere.aws.cloudformation.template_loader import (
-            CloudFormationTemplateLoader)
-        from cfn_sphere.aws.cloudformation.template_transformer import (
-            CloudFormationTemplateTransformer)
-
-        for path, filename in project.get_property('template_files'):
-            template = CloudFormationTemplateLoader.get_template_from_url(
-                filename, path)
-            transformed = CloudFormationTemplateTransformer.transform_template(
-                template)
-            output = transformed.get_template_json()
-
-            bucket_name = project.get_property('bucket_name')
-            key_prefix = project.get_property('template_key_prefix')
-            version_path = '{0}v{1}/{2}'.format(
-                key_prefix, project.version, filename.replace('yml', 'json'))
-            latest_path = '{0}latest/{1}'.format(
-                key_prefix, filename.replace('yml', 'json'))
-
-            acl = project.get_property('template_file_access_control')
-            upload_helper(logger, bucket_name, version_path, output, acl)
-            upload_helper(logger, bucket_name, latest_path, output, acl)
+    from upload_task import upload_cfn_to_s3
+    upload_cfn_to_s3  # Linting purposes, no other use
