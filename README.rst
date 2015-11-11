@@ -94,7 +94,7 @@ This will upload the files to the following files:
 - `my_lambda/v123/projectname.zip`
 - `my_lambda/latest/projectname.zip`
 
-@Task: upload_json_to_s3
+@Task: upload_cfn_to_s3
 -----------------------
 This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
 The bucket name is to be set as follows in ``build.py``:
