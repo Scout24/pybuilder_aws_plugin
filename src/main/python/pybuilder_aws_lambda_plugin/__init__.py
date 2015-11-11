@@ -5,7 +5,7 @@ import os
 import zipfile
 import subprocess
 
-from helpers import upload_helper
+from .helpers import upload_helper
 from pybuilder.core import task, depends, init
 from pybuilder.plugins.python.install_dependencies_plugin import (
     as_pip_argument)

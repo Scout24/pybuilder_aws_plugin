@@ -1,4 +1,4 @@
-from helpers import upload_helper
+from .helpers import upload_helper
 from pybuilder.core import task
 
 
