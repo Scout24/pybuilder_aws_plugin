@@ -9,6 +9,10 @@ from pybuilder_aws_lambda_plugin import upload_cfn_to_s3
 
 
 class UploadJSONToS3(TestCase):
+    """
+    These tests are separate since they only work with Python2 >2.6 by
+    the time being. Python3 support is underway.
+    """
 
     def setUp(self):
         self.bucket_name = 'palp-cfn-json'

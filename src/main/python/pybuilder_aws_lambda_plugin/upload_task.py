@@ -3,9 +3,16 @@ from pybuilder.core import task
 
 
 @task('upload_cfn_to_s3',
-      description="Convert & upload CloudFormation templates in JSON "
-      "created out of the CFN-Sphere template YAML files")
+      description='Convert & upload CloudFormation templates in JSON '
+      'created out of the CFN-Sphere template YAML files')
 def upload_cfn_to_s3(project, logger):
+    """
+    This task is separate since they only work with Python2 >2.6 by
+    the time being. Python3 support is underway.
+
+    This means, when using Python<2.7, this task is not visible
+    (see __init__.py).
+    """
     from cfn_sphere.aws.cloudformation.template_loader import (
         CloudFormationTemplateLoader)
     from cfn_sphere.aws.cloudformation.template_transformer import (

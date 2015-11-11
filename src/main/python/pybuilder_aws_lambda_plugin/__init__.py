@@ -12,7 +12,7 @@ from pybuilder.plugins.python.install_dependencies_plugin import (
 from .helpers import upload_helper
 
 
-def zip_recursive(archive, directory, folder=""):
+def zip_recursive(archive, directory, folder=''):
     """Zip directories recursively"""
     for item in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, item)):
