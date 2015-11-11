@@ -140,7 +140,7 @@ class TestPrepareDependenciesDir(TestCase):
         self.patch_aspip.stop()
 
     def test_prepare_dependencies_no_excludes(self):
-        """Test prepare_dependencies_dir() w/o excludes"""
+        """Test prepare_dependencies_dir() w/o excludes."""
         self.input_project.dependencies = ['a', 'b', 'c']
         prepare_dependencies_dir(self.input_project, 'targetdir')
         self.assertEqual(self.mock_aspip.call_count, 3)
@@ -165,7 +165,7 @@ class TestPrepareDependenciesDir(TestCase):
             self.mock_popen.return_value.communicate.call_count, 1)
 
     def test_prepare_dependencies_with_excludes(self):
-        # Mock return value unmodified
+        """Test prepare_dependencies_dir() w/ excludes."""
         self.input_project.dependencies = ['a', 'b', 'c', 'd', 'e']
         prepare_dependencies_dir(
             self.input_project, 'targetdir', excludes=['b', 'e', 'a'])

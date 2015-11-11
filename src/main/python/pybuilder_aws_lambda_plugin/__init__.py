@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
 import os
-import zipfile
 import subprocess
+import sys
+import zipfile
 
-from .helpers import upload_helper
-from pybuilder.core import task, depends, init
+from pybuilder.core import depends, init, task
 from pybuilder.plugins.python.install_dependencies_plugin import (
     as_pip_argument)
+
+from .helpers import upload_helper
 
 
 def zip_recursive(archive, directory, folder=""):
