@@ -96,6 +96,9 @@ This will upload the files to the following files:
 
 @Task: upload_cfn_to_s3
 -----------------------
+ATTENTION: This task is currently only available for Python 2.7. No 2.6 and no
+3.x is supported.
+
 This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
 The bucket name is to be set as follows in ``build.py``:
 
