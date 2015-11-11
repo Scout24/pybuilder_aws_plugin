@@ -101,10 +101,10 @@ def upload_zip_to_s3(project, logger):
     upload_helper(logger, bucket_name, keyname_latest, data, acl)
 
 if sys.version_info[0:2] == (2, 7):
-    @task('upload_json_to_s3',
+    @task('upload_cfn_to_s3',
           description="Convert & upload CloudFormation templates in JSON "
           "created out of the CFN-Sphere template YAML files")
-    def upload_json_to_s3(project, logger):
+    def upload_cfn_to_s3(project, logger):
         from cfn_sphere.aws.cloudformation.template_loader import (
             CloudFormationTemplateLoader)
         from cfn_sphere.aws.cloudformation.template_transformer import (
