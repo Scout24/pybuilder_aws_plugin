@@ -15,16 +15,16 @@ def zip_recursive(archive, directory, folder=""):
     """Zip directories recursively"""
     for item in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, item)):
-            archive.write(os.path.join(directory, item),
-                          os.path.join(folder, item),
-                          zipfile.ZIP_DEFLATED)
+            archive.write(
+                os.path.join(directory, item), os.path.join(folder, item),
+                zipfile.ZIP_DEFLATED)
         elif os.path.isdir(os.path.join(directory, item)):
-            zip_recursive(archive,
-                          os.path.join(directory, item),
-                          folder=os.path.join(folder, item))
+            zip_recursive(
+                archive, os.path.join(directory, item),
+                folder=os.path.join(folder, item))
 
 
-def prepare_dependencies_dir(project, target_directory, excludes=None):  # pragma: nocover
+def prepare_dependencies_dir(project, target_directory, excludes=None):
     """Get all dependencies from project and install them to given dir"""
     excludes = excludes or []
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
@@ -38,18 +38,18 @@ def prepare_dependencies_dir(project, target_directory, excludes=None):  # pragm
 
 
 def get_path_to_zipfile(project):
-    return os.path.join(project.expand_path("$dir_target"),
-                        "{0}.zip".format(project.name))
+    return os.path.join(
+        project.expand_path('$dir_target'), '{0}.zip'.format(project.name))
 
 
 @init
 def initialize_plugin(project):
-    project.set_property('lambda_file_access_control',
-                         'bucket-owner-full-control')
+    project.set_property(
+        'lambda_file_access_control', 'bucket-owner-full-control')
     project.set_property('bucket_prefix', '')
 
-    project.set_property('template_file_access_control',
-                         'bucket-owner-full-control')
+    project.set_property(
+        'template_file_access_control', 'bucket-owner-full-control')
     project.set_property('template_key_prefix', '')
 
 
