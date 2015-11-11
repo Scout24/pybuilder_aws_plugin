@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: performance-app
+Parameters:
+  notificationEmail:
+    Default: is24-aws-deployment@immobilienscout24.de
+    Description: Email to send event notifications / alerts to
+    Type: String
+Resources:
+  notificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+      - Endpoint: "|Ref|notificationEmail"
+        Protocol: email
+Outputs:
+  notificationTopicArn:
+    Description: Notification Topic ARN
+    Value: "|Ref|notificationTopic"
