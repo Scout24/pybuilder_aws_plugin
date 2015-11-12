@@ -2,16 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import os
-import mock
-import tempfile
-import boto3
 import shutil
+import subprocess
+import sys
+import tempfile
 import zipfile
-from moto import mock_s3
 from unittest import TestCase
-from pybuilder.core import Project, Logger
+
+import boto3
+import mock
+from moto import mock_s3
+from pybuilder.core import Logger, Project
 from pybuilder_aws_lambda_plugin import (
-    upload_zip_to_s3, package_lambda_code, initialize_plugin)
+    initialize_plugin, package_lambda_code, prepare_dependencies_dir,
+    upload_zip_to_s3)
 
 
 class TestInitializePlugin(TestCase):
@@ -20,9 +24,13 @@ class TestInitializePlugin(TestCase):
         project = Project('.')
         initialize_plugin(project)
         self.assertEqual(project.get_property('lambda_file_access_control'),
-                        'bucket-owner-full-control')
+                         'bucket-owner-full-control')
         self.assertEqual(project.get_property('bucket_prefix'),
-                        '')
+                         '')
+        self.assertEqual(project.get_property('template_file_access_control'),
+                         'bucket-owner-full-control')
+        self.assertEqual(project.get_property('template_key_prefix'),
+                         '')
 
 
 class PackageLambdaCodeTest(TestCase):
@@ -47,8 +55,8 @@ class PackageLambdaCodeTest(TestCase):
         shutil.rmtree(self.tempdir)
 
     @mock.patch('pybuilder_aws_lambda_plugin.prepare_dependencies_dir')
-    def test_package_lambda_assembles_zipfile_correctly(self,
-                                                        prepare_dependencies_dir_mock):
+    def test_package_lambda_assembles_zipfile_correctly(
+            self, prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
         zf = zipfile.ZipFile(self.zipfile_name)
         expected = sorted(['test_dependency_module.py',
@@ -125,3 +133,71 @@ class UploadZipToS3Test(TestCase):
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
         pass
+
+
+class TestPrepareDependenciesDir(TestCase):
+
+    """Testcases for prepare_dependencies_dir()"""
+
+    def setUp(self):
+        self.patch_popen = mock.patch(
+            'pybuilder_aws_lambda_plugin.subprocess.Popen')
+        self.mock_popen = self.patch_popen.start()
+        self.patch_aspip = mock.patch(
+            'pybuilder_aws_lambda_plugin.as_pip_argument')
+        self.mock_aspip = self.patch_aspip.start()
+        # Mock return value unmodified
+        self.mock_aspip.side_effect = lambda x: x
+        self.mock_popen.return_value.communicate.return_value = (1, 2)
+        self.input_project = mock.Mock()
+
+    def tearDown(self):
+        self.patch_popen.stop()
+        self.patch_aspip.stop()
+
+    def test_prepare_dependencies_no_excludes(self):
+        """Test prepare_dependencies_dir() w/o excludes."""
+        self.input_project.dependencies = ['a', 'b', 'c']
+        prepare_dependencies_dir(self.input_project, 'targetdir')
+        self.assertEqual(self.mock_aspip.call_count, 3)
+        self.assertNotEqual(self.mock_aspip.call_count, 4)
+        self.assertEqual(
+            list(self.mock_popen.call_args_list), [
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', 'a'],
+                    stdout=subprocess.PIPE),
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', 'b'],
+                    stdout=subprocess.PIPE),
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', 'c'],
+                    stdout=subprocess.PIPE)])
+        self.assertEqual(
+            self.mock_popen.return_value.communicate.call_count, 3)
+        self.assertNotEqual(
+            self.mock_popen.return_value.communicate.call_count, 1)
+
+    def test_prepare_dependencies_with_excludes(self):
+        """Test prepare_dependencies_dir() w/ excludes."""
+        self.input_project.dependencies = ['a', 'b', 'c', 'd', 'e']
+        prepare_dependencies_dir(
+            self.input_project, 'targetdir', excludes=['b', 'e', 'a'])
+        self.assertEqual(self.mock_aspip.call_count, 5)
+        self.assertNotEqual(self.mock_aspip.call_count, 4)
+        self.assertEqual(
+            list(self.mock_popen.call_args_list), [
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', 'c'],
+                    stdout=subprocess.PIPE),
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', 'd'],
+                    stdout=subprocess.PIPE)])
+        self.assertEqual(
+            self.mock_popen.return_value.communicate.call_count, 2)
+        self.assertNotEqual(
+            self.mock_popen.return_value.communicate.call_count, 1)
+
+
+if sys.version_info[0:2] == (2, 7):
+    from version_specific import UploadJSONToS3
+    UploadJSONToS3  # Linting purposes, no other use
