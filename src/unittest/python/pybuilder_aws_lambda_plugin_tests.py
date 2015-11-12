@@ -121,7 +121,7 @@ class UploadZipToS3Test(TestCase):
 
 class TestPrepareDependenciesDir(TestCase):
 
-    """test for prepare_dependencies_dir()"""
+    """Testcases for prepare_dependencies_dir()"""
 
     def setUp(self):
         self.patch_popen = mock.patch(
@@ -146,8 +146,7 @@ class TestPrepareDependenciesDir(TestCase):
         self.assertEqual(self.mock_aspip.call_count, 3)
         self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
-            list(self.mock_popen.call_args_list),
-            [
+            list(self.mock_popen.call_args_list), [
                 mock.call(
                     ['pip', 'install', '--target', 'targetdir', 'a'],
                     stdout=subprocess.PIPE),
@@ -156,9 +155,7 @@ class TestPrepareDependenciesDir(TestCase):
                     stdout=subprocess.PIPE),
                 mock.call(
                     ['pip', 'install', '--target', 'targetdir', 'c'],
-                    stdout=subprocess.PIPE)
-            ]
-        )
+                    stdout=subprocess.PIPE)])
         self.assertEqual(
             self.mock_popen.return_value.communicate.call_count, 3)
         self.assertNotEqual(
@@ -172,16 +169,13 @@ class TestPrepareDependenciesDir(TestCase):
         self.assertEqual(self.mock_aspip.call_count, 5)
         self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
-            list(self.mock_popen.call_args_list),
-            [
+            list(self.mock_popen.call_args_list), [
                 mock.call(
                     ['pip', 'install', '--target', 'targetdir', 'c'],
                     stdout=subprocess.PIPE),
                 mock.call(
                     ['pip', 'install', '--target', 'targetdir', 'd'],
-                    stdout=subprocess.PIPE)
-            ]
-        )
+                    stdout=subprocess.PIPE)])
         self.assertEqual(
             self.mock_popen.return_value.communicate.call_count, 2)
         self.assertNotEqual(

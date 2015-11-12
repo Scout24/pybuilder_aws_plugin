@@ -6,5 +6,4 @@ def upload_helper(logger, bucket_name, keyname, data, acl):
     logger.info(
         'Uploading lambda-zip to bucket: "{0}" as key: "{1}"'
         .format(bucket_name, keyname))
-    s3.Bucket(bucket_name).put_object(
-        Key=keyname, Body=data, ACL=acl)
+    s3.Bucket(bucket_name).put_object(Key=keyname, Body=data, ACL=acl)
