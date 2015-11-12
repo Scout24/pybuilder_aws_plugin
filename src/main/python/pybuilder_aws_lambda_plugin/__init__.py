@@ -8,6 +8,7 @@ import subprocess
 
 from pybuilder.core import task, depends, init
 from pybuilder.plugins.python.install_dependencies_plugin import as_pip_argument
+from pybuilder.ci_server_interaction import flush_text_line
 
 
 def zip_recursive(archive, directory, folder=""):
@@ -81,6 +82,13 @@ def package_lambda_code(project, logger):
     logger.info("Lambda zip is available at: '{0}'.".format(path_to_zipfile))
 
 
+def teamcity_helper(keyname_version):
+    flush_text_line(
+        "##teamcity[setParameter name='crassus_filename' value='{0}']".format(
+            keyname_version
+        ))
+
+
 @task('upload_zip_to_s3', description="Upload a packaged lambda-zip to S3")
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
@@ -93,3 +101,5 @@ def upload_zip_to_s3(project, logger):
     keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
     upload_helper(project, logger, bucket_name, keyname_version, data)
     upload_helper(project, logger, bucket_name, keyname_latest, data)
+    if project.get_property("teamcity_output"):
+        teamcity_helper(keyname_version)
