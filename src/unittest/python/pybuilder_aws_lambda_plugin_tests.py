@@ -13,9 +13,9 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_lambda_plugin import (
-    initialize_plugin, package_lambda_code, prepare_dependencies_dir,
-    upload_zip_to_s3)
+from pybuilder_aws_lambda_plugin.upload_zip_task import (package_lambda_code, prepare_dependencies_dir,
+                                                         upload_zip_to_s3)
+from pybuilder_aws_lambda_plugin import initialize_plugin
 
 
 class TestInitializePlugin(TestCase):
@@ -54,7 +54,7 @@ class PackageLambdaCodeTest(TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    @mock.patch('pybuilder_aws_lambda_plugin.prepare_dependencies_dir')
+    @mock.patch('pybuilder_aws_lambda_plugin.upload_zip_task.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(
             self, prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
@@ -121,7 +121,8 @@ class UploadZipToS3Test(TestCase):
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
-        flush_text_line_mock.assert_called_with("##teamcity[setParameter name='palp_keyname' value='v123/palp.zip']")
+        flush_text_line_mock.assert_called_with(
+            "##teamcity[setParameter name='palp_keyname' value='v123/palp.zip']")
 
     @mock.patch("pybuilder_aws_lambda_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_not_set(self, flush_text_line_mock):
@@ -129,7 +130,6 @@ class UploadZipToS3Test(TestCase):
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
         flush_text_line_mock.assert_not_called()
-
 
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
@@ -142,10 +142,10 @@ class TestPrepareDependenciesDir(TestCase):
 
     def setUp(self):
         self.patch_popen = mock.patch(
-            'pybuilder_aws_lambda_plugin.subprocess.Popen')
+            'pybuilder_aws_lambda_plugin.upload_zip_task.subprocess.Popen')
         self.mock_popen = self.patch_popen.start()
         self.patch_aspip = mock.patch(
-            'pybuilder_aws_lambda_plugin.as_pip_argument')
+            'pybuilder_aws_lambda_plugin.upload_zip_task.as_pip_argument')
         self.mock_aspip = self.patch_aspip.start()
         # Mock return value unmodified
         self.mock_aspip.side_effect = lambda x: x
@@ -199,6 +199,6 @@ class TestPrepareDependenciesDir(TestCase):
             self.mock_popen.return_value.communicate.call_count, 1)
 
 
-if sys.version_info[0:2] == (2, 7):
+if sys.version_info[0:2] >= (2, 7):
     from version_specific import UploadJSONToS3
     UploadJSONToS3  # Linting purposes, no other use

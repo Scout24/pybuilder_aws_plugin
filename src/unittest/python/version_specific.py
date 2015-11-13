@@ -5,7 +5,7 @@ from unittest import TestCase
 import boto3
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_lambda_plugin import upload_cfn_to_s3
+from pybuilder_aws_lambda_plugin.upload_cfn_task import upload_cfn_to_s3
 
 
 class UploadJSONToS3(TestCase):
