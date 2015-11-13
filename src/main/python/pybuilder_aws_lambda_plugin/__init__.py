@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
  
 import os
-import boto3
-import zipfile
 import subprocess
 import sys
 import zipfile
@@ -11,9 +9,8 @@ import zipfile
 from pybuilder.core import depends, init, task
 from pybuilder.plugins.python.install_dependencies_plugin import (
     as_pip_argument)
-from pybuilder.ci_server_interaction import flush_text_line
 
-from .helpers import upload_helper
+from .helpers import upload_helper, teamcity_helper
 
 
 def zip_recursive(archive, directory, folder=''):
@@ -56,6 +53,7 @@ def initialize_plugin(project):
     project.set_property(
         'template_file_access_control', 'bucket-owner-full-control')
     project.set_property('template_key_prefix', '')
+    project.set_property('teamcity_parameter', '')
 
 
 @task('package_lambda_code',
@@ -82,13 +80,6 @@ def package_lambda_code(project, logger):
     logger.info('Lambda zip is available at: "{0}".'.format(path_to_zipfile))
 
 
-def teamcity_helper(keyname_version):
-    flush_text_line(
-        "##teamcity[setParameter name='crassus_filename' value='{0}']".format(
-            keyname_version
-        ))
-
-
 @task('upload_zip_to_s3', description='Upload a packaged lambda-zip to S3')
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
@@ -103,8 +94,9 @@ def upload_zip_to_s3(project, logger):
     acl = project.get_property('lambda_file_access_control')
     upload_helper(logger, bucket_name, keyname_version, data, acl)
     upload_helper(logger, bucket_name, keyname_latest, data, acl)
-    if project.get_property("teamcity_output"):
-        teamcity_helper(keyname_version)
+    tc_param = project.get_property('teamcity_parameter')
+    if project.get_property("teamcity_output") and tc_param:
+        teamcity_helper(tc_param, keyname_version)
         
 if sys.version_info[0:2] == (2, 7):
     from upload_task import upload_cfn_to_s3

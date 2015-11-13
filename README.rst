@@ -94,6 +94,15 @@ This will upload the files to the following files:
 - `my_lambda/v123/projectname.zip`
 - `my_lambda/latest/projectname.zip`
 
+In an TeamCity Environment (teamcity_output = True) you can use the property
+``teamcity_parameter`` to push en ``##teamcity[setParameter name='' value='']``
+event to TeamCity and rewrite this parameter with the name of the uploaded
+zip file. For example:
+
+.. code:: python
+
+   project.set_property('teamcity_parameter', 'my_tc_parameter')
+
 @Task: upload_cfn_to_s3
 -----------------------
 ATTENTION: This task is currently only available for Python 2.7. No 2.6 and no

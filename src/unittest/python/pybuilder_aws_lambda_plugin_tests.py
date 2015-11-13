@@ -114,15 +114,16 @@ class UploadZipToS3Test(TestCase):
         self.assertEqual(s3_object_list[0].key, 'palp/latest/palp.zip')
         self.assertEqual(s3_object_list[1].key, 'palp/v123/palp.zip')
 
-    @mock.patch("pybuilder_aws_lambda_plugin.flush_text_line")
+    @mock.patch("pybuilder_aws_lambda_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_set(self, flush_text_line_mock):
         self.project.set_property('teamcity_output', True)
+        self.project.set_property('teamcity_parameter', 'palp_keyname')
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
-        flush_text_line_mock.assert_called_with("##teamcity[setParameter name='crassus_filename' value='v123/palp.zip']")
+        flush_text_line_mock.assert_called_with("##teamcity[setParameter name='palp_keyname' value='v123/palp.zip']")
 
-    @mock.patch("pybuilder_aws_lambda_plugin.flush_text_line")
+    @mock.patch("pybuilder_aws_lambda_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_not_set(self, flush_text_line_mock):
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
