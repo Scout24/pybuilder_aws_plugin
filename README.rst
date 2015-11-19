@@ -124,7 +124,7 @@ tupels:
 
 .. code:: python
 
-    project.setProperty('template_files',
+    project.set_property('template_files',
         [
             ('path1','filename1'),
             ('path2','filename2'),
