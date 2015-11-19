@@ -52,14 +52,14 @@ files under this folder are put at the root layer (``/``) of the zip file.
 This task uploads the generated zip to a S3 bucket. The bucket name is to be
 set as follows in ``build.py``:
 
-.. code:: console
+.. code:: python
 
     project.set_property('bucket_name', 'my_lambda_bucket')
 
 The default acl for zips to be uploaded is ``bucket-owner-full-control``. But
 if you need another acl you can overwrite this as follows in ``build.py``:
 
-.. code:: console
+.. code:: python
 
     project.set_property('lambda_file_access_control', '<wished_acl>')
 
