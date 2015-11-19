@@ -108,21 +108,21 @@ zip file. For example:
 This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
 The bucket name is to be set as follows in ``build.py``:
 
-.. code:: console
+.. code:: python
 
     project.set_property('bucket_name', 'my_lambda_bucket')
 
 The default acl for JSON files to be uploaded is ``bucket-owner-full-control``.
 But if you need another acl you can overwrite this as follows in ``build.py``:
 
-.. code:: console
+.. code:: python
 
     project.set_property('template_file_access_control', '<wished_acl>')
 
 To define the templates you wish to be uploaded set the property as a list of
 tupels:
 
-.. code:: console
+.. code:: python
 
     project.setProperty('template_files',
         [
