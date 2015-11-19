@@ -1,18 +1,18 @@
-.. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin.svg?branch=master
-    :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_lambda_plugin
+.. image:: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_plugin.svg?branch=master
+    :target: https://travis-ci.org/ImmobilienScout24/pybuilder_aws_plugin
 
-.. image:: https://coveralls.io/repos/ImmobilienScout24/pybuilder_aws_lambda_plugin/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_lambda_plugin?branch=master
+.. image:: https://coveralls.io/repos/ImmobilienScout24/pybuilder_aws_plugin/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/ImmobilienScout24/pybuilder_aws_plugin?branch=master
 
-.. image:: https://badge.fury.io/py/pybuilder_aws_lambda_plugin.svg
-    :target: https://badge.fury.io/py/pybuilder_aws_lambda_plugin
+.. image:: https://badge.fury.io/py/pybuilder_aws_plugin.svg
+    :target: https://badge.fury.io/py/pybuilder_aws_plugin
 
 
-===========================
-pybuilder_aws_lambda_plugin
-===========================
+====================
+pybuilder_aws_plugin
+====================
 
-PyBuilder plugin to handle packaging and uploading Python AWS Lambda code.
+PyBuilder plugin to handle AWS functionality.
 
 **WARNING**: You seem to be using an outdated version of this plugin.
 It has recently been renamed from 'pybuilder_aws_lambda_plugin' to
@@ -24,7 +24,7 @@ Add plugin dependency to your ``build.py``:
 
 .. code:: python
 
-    use_plugin('pypi:pybuilder_aws_lambda_plugin')
+    use_plugin('pypi:pybuilder_aws_plugin')
 
 After this you have the following additional tasks, which are explained below.
 

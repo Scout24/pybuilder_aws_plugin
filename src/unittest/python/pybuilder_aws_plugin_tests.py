@@ -13,9 +13,9 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_lambda_plugin.upload_zip_task import (package_lambda_code, prepare_dependencies_dir,
-                                                         upload_zip_to_s3)
-from pybuilder_aws_lambda_plugin import initialize_plugin
+from pybuilder_aws_plugin.upload_zip_task import (package_lambda_code, prepare_dependencies_dir,
+                                                  upload_zip_to_s3)
+from pybuilder_aws_plugin import initialize_plugin
 
 
 class TestInitializePlugin(TestCase):
@@ -54,7 +54,7 @@ class PackageLambdaCodeTest(TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    @mock.patch('pybuilder_aws_lambda_plugin.upload_zip_task.prepare_dependencies_dir')
+    @mock.patch('pybuilder_aws_plugin.upload_zip_task.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(
             self, prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
@@ -114,7 +114,7 @@ class UploadZipToS3Test(TestCase):
         self.assertEqual(s3_object_list[0].key, 'palp/latest/palp.zip')
         self.assertEqual(s3_object_list[1].key, 'palp/v123/palp.zip')
 
-    @mock.patch("pybuilder_aws_lambda_plugin.helpers.flush_text_line")
+    @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_set(self, flush_text_line_mock):
         self.project.set_property('teamcity_output', True)
         self.project.set_property('teamcity_parameter', 'palp_keyname')
@@ -124,7 +124,7 @@ class UploadZipToS3Test(TestCase):
         flush_text_line_mock.assert_called_with(
             "##teamcity[setParameter name='palp_keyname' value='v123/palp.zip']")
 
-    @mock.patch("pybuilder_aws_lambda_plugin.helpers.flush_text_line")
+    @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_not_set(self, flush_text_line_mock):
 
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
@@ -142,10 +142,10 @@ class TestPrepareDependenciesDir(TestCase):
 
     def setUp(self):
         self.patch_popen = mock.patch(
-            'pybuilder_aws_lambda_plugin.upload_zip_task.subprocess.Popen')
+            'pybuilder_aws_plugin.upload_zip_task.subprocess.Popen')
         self.mock_popen = self.patch_popen.start()
         self.patch_aspip = mock.patch(
-            'pybuilder_aws_lambda_plugin.upload_zip_task.as_pip_argument')
+            'pybuilder_aws_plugin.upload_zip_task.as_pip_argument')
         self.mock_aspip = self.patch_aspip.start()
         # Mock return value unmodified
         self.mock_aspip.side_effect = lambda x: x

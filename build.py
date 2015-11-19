@@ -12,15 +12,15 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 
 
-name = "pybuilder_aws_lambda_plugin"
+name = "pybuilder_aws_plugin"
 default_task = "publish"
 version = VCSRevision().get_git_revision_count()
-summary = "PyBuilder plugin to handle packaging and uploading Python AWS Lambda code."
+summary = "PyBuilder plugin to handle AWS functionality"
 authors = [Author('Valentin Haenel', 'valentin@haenel.co'),
            Author('Stefan Neben',    'stefan.neben@gmail.com'),
            ]
 license = 'Apache'
-url = 'https://github.com/ImmobilienScout24/pybuilder_aws_lambda_plugin'
+url = 'https://github.com/ImmobilienScout24/pybuilder_aws_plugin'
 
 
 @init
