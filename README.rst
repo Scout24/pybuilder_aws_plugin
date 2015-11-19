@@ -22,7 +22,7 @@ Add plugin dependency to your ``build.py``:
 
     use_plugin('pypi:pybuilder_aws_lambda_plugin')
 
-After this you have 2 additional tasks, which are explained below.
+After this you have the following additional tasks, which are explained below.
 
 @Task: package_lambda_code
 --------------------------
