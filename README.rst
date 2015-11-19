@@ -14,6 +14,10 @@ pybuilder_aws_lambda_plugin
 
 PyBuilder plugin to handle packaging and uploading Python AWS Lambda code.
 
+**WARNING**: You seem to be using an outdated version of this plugin.
+It has recently been renamed from 'pybuilder_aws_lambda_plugin' to
+'pybuilder_aws_plugin'. Please update your build.py!
+
 How to use the Plugin
 =====================
 Add plugin dependency to your ``build.py``:

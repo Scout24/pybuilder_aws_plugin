@@ -1,4 +1,4 @@
-from .helpers import upload_helper
+from .helpers import upload_helper, deprecation_message
 from pybuilder.core import task
 
 
@@ -13,6 +13,7 @@ def upload_cfn_to_s3(project, logger):
     This means, when using Python<2.7, this task is not visible
     (see __init__.py).
     """
+    logger.warn(deprecation_message)
     from cfn_sphere.aws.cloudformation.template_loader import (
         CloudFormationTemplateLoader)
     from cfn_sphere.aws.cloudformation.template_transformer import (

@@ -7,7 +7,7 @@ from pybuilder.core import depends, task
 from pybuilder.plugins.python.install_dependencies_plugin import (
     as_pip_argument)
 
-from .helpers import upload_helper, teamcity_helper
+from .helpers import upload_helper, teamcity_helper, deprecation_message
 
 
 def zip_recursive(archive, directory, folder=''):
@@ -46,6 +46,7 @@ def get_path_to_zipfile(project):
       'lambda-zip')
 @depends('package')
 def package_lambda_code(project, logger):
+    logger.warn(deprecation_message)
     dir_target = project.expand_path('$dir_target')
     lambda_dependencies_dir = os.path.join(dir_target, 'lambda_dependencies')
     excludes = ['boto', 'boto3']
@@ -68,6 +69,7 @@ def package_lambda_code(project, logger):
 @task('upload_zip_to_s3', description='Upload a packaged lambda-zip to S3')
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
+    logger.warn(deprecation_message)
     path_to_zipfile = get_path_to_zipfile(project)
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
