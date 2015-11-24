@@ -27,10 +27,11 @@ def upload_cfn_to_s3(project, logger):
 
         bucket_name = project.get_property('bucket_name')
         key_prefix = project.get_property('template_key_prefix')
+        filename = filename.replace('.yml', '.json')
+        filename = filename.replace('.yaml', '.json')
         version_path = '{0}v{1}/{2}'.format(
-            key_prefix, project.version, filename.replace('yml', 'json'))
-        latest_path = '{0}latest/{1}'.format(
-            key_prefix, filename.replace('yml', 'json'))
+            key_prefix, project.version, filename)
+        latest_path = '{0}latest/{1}'.format(key_prefix, filename)
 
         acl = project.get_property('template_file_access_control')
         upload_helper(logger, bucket_name, version_path, output, acl)
