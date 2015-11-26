@@ -13,7 +13,8 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_plugin.upload_zip_task import (package_lambda_code, prepare_dependencies_dir,
+from pybuilder_aws_plugin.upload_zip_task import (package_lambda_code,
+                                                  prepare_dependencies_dir,
                                                   upload_zip_to_s3)
 from pybuilder_aws_plugin import initialize_plugin
 
@@ -63,7 +64,8 @@ class PackageLambdaCodeTest(TestCase):
                            'test_dependency_package/__init__.py',
                            'test_package_directory/__init__.py',
                            'test_module_file.py',
-                           'test_script.py'])
+                           'test_script.py',
+                           'VERSION'])
         self.assertEqual(sorted(zf.namelist()), expected)
 
 

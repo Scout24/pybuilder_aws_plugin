@@ -41,6 +41,14 @@ def get_path_to_zipfile(project):
         project.expand_path('$dir_target'), '{0}.zip'.format(project.name))
 
 
+def write_version(project, archive):
+    """Get the current version and write it to a version file"""
+    filename = os.path.join(project.expand_path('$dir_target'), 'VERSION')
+    with open(filename, 'w') as version_file:
+        version_file.write(project.version)
+    archive.write(filename, 'VERSION')
+
+
 @task('package_lambda_code',
       description='Package the modules, dependencies and scripts into a '
       'lambda-zip')
@@ -61,6 +69,7 @@ def package_lambda_code(project, logger):
     zip_recursive(archive, sources)
     scripts = project.expand_path('$dir_source_main_scripts')
     zip_recursive(archive, scripts)
+    write_version(project, archive)
     archive.close()
     logger.info('Lambda zip is available at: "{0}".'.format(path_to_zipfile))
 
