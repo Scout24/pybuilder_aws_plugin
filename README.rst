@@ -30,13 +30,14 @@ After this you have the following additional tasks, which are explained below:
 
 @Task: package_lambda_code
 --------------------------
-This task assembles the zip file which will be uploaded to S3 with the second
-task. What is this task doing in detail?
+This task assembles the Zip-file (a.k.a. the *lambda-zip*) which will be
+uploaded to S3 with the task ``upload_zip_to_s3``. What is this task doing in
+detail?
 
 Package all own modules
 ~~~~~~~~~~~~~~~~~~~~~~~
 All modules which are found in ``src/main/python/`` where put directly into the
-temporary folder, which will zipped later.
+temporary folder, which will be zipped later.
 
 Package all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
