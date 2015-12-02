@@ -111,8 +111,13 @@ zip file. For example:
 
 @Task: upload_cfn_to_s3
 -----------------------
-This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
-The bucket name is to be set as follows in ``build.py``:
+
+
+NOTE: This task is available for Python 2.7 and up, due to CFN-Sphere
+dependencies not being available for Python 2.6.
+
+This task converts and uploads the CFN-Sphere template YAML files as JSON to a
+S3 bucket.  The bucket name is to be set as follows in ``build.py``:
 
 .. code:: python
 
@@ -159,7 +164,22 @@ This will upload the files to the following files:
 - ``my_lambda/latest/filename1.json``
 - ``my_lambda/latest/filename2.json``
 
-NOTE: This task is available for Python 2.7 and up.
+
+The default acl for templates to be uploaded is ``bucket-owner-full-control``.
+But if you need another acl you can overwrite this as follows in ``build.py``:
+
+.. code:: python
+
+    project.set_property('template_file_access_control', '<wished_acl>')
+
+Possible acl values are:
+
+* private
+* public-read
+* public-read-write
+* authenticated-read
+* bucket-owner-read
+* bucket-owner-full-control
 
 Licence
 =======
