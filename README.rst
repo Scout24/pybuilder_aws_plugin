@@ -34,23 +34,24 @@ This task assembles the Zip-file (a.k.a. the *lambda-zip*) which will be
 uploaded to S3 with the task ``upload_zip_to_s3``. What is this task doing in
 detail?
 
-Package all own modules
-~~~~~~~~~~~~~~~~~~~~~~~
-All modules which are found in ``src/main/python/`` where put directly into the
-temporary folder, which will be zipped later.
-
 Package all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Every entry in ``build.py`` with **depends_on** is installed into the zip
-file. The target path for ``pip install`` points directly to the
-temporary folder, which will then be zipped.
+Every entry in ``build.py`` that is specified by using ``project.depends_on``
+is installed into a temporary directory  using ``pip install -t`` and are then
+copied into the lambda-zip from there.
+
+Package all own modules
+~~~~~~~~~~~~~~~~~~~~~~~
+All modules which are found in ``src/main/python/`` are copied directly into
+the lambda-zip.
 
 Package all script files
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The content in the scripts folder (``src/main/scripts``) of an pybuilder
-project is normally intended to go to ``/usr/bin``. This plugin sees this folder
-as a folder with script(s) including lambda handler functions. Therefore all
-files under this folder are put at the root layer (``/``) of the zip file.
+The content of the scripts folder (``src/main/scripts``) in a PyBuilder project
+is normally intended to be placed in ``/usr/bin``. This plugin assumes this
+directory contains script(s) including the lambda handler functions. Therefore
+all files under this folder are copied directly to the root layer (``/``) of
+the lambda-zip.
 
 @Task: upload_zip_to_s3
 -----------------------
@@ -77,7 +78,7 @@ Possible acl values are:
 * bucket-owner-read
 * bucket-owner-full-control
 
-Further the plugin assumes that you already have a shell with enabled aws
+Further, the plugin assumes that you already have a shell with enabled aws
 access (exported keys or .boto or ...). For that take a look at
 e.g. `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_
 
