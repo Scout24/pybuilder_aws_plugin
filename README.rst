@@ -22,7 +22,11 @@ Add plugin dependency to your ``build.py``:
 
     use_plugin('pypi:pybuilder_aws_plugin')
 
-After this you have the following additional tasks, which are explained below.
+After this you have the following additional tasks, which are explained below:
+
+* ``package_lambda_code``
+* ``upload_zip_to_s3``
+* ``upload_cfn_to_s3``
 
 @Task: package_lambda_code
 --------------------------
