@@ -71,12 +71,12 @@ if you need another acl you can overwrite this as follows in ``build.py``:
 
 Possible acl values are:
 
-* private
-* public-read
-* public-read-write
-* authenticated-read
-* bucket-owner-read
-* bucket-owner-full-control
+* ``private``
+* ``public-read``
+* ``public-read-write``
+* ``authenticated-read``
+* ``bucket-owner-read``
+* ``bucket-owner-full-control``
 
 Further, the plugin assumes that you already have a shell with enabled aws
 access (exported keys or .boto or ...). For that take a look at
@@ -174,12 +174,12 @@ But if you need another acl you can overwrite this as follows in ``build.py``:
 
 Possible acl values are:
 
-* private
-* public-read
-* public-read-write
-* authenticated-read
-* bucket-owner-read
-* bucket-owner-full-control
+* ``private``
+* ``public-read``
+* ``public-read-write``
+* ``authenticated-read``
+* ``bucket-owner-read``
+* ``bucket-owner-full-control``
 
 Licence
 =======
