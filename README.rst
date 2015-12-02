@@ -16,7 +16,7 @@ PyBuilder plugin to handle AWS functionality.
 
 How to use the Plugin
 =====================
-Add plugin dependency to your ``build.py``:
+Add plugin dependency to your ``build.py`` (will install directly from PyPi):
 
 .. code:: python
 
