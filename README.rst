@@ -81,10 +81,10 @@ access (exported keys or .boto or ...). For that take a look at
 e.g. `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_
 
 The uploaded files will be placed in a directory with the version number,
-and in a `latest/` directory, such as:
+and in a ``latest/`` directory, such as:
 
-- `v123/projectname.zip`
-- `latest/projectname.zip`
+- ``v123/projectname.zip``
+- ``latest/projectname.zip``
 
 You can use the property ``bucket_prefix`` to add a prefix to the uploaded
 files. For example:
@@ -95,8 +95,8 @@ files. For example:
 
 This will upload the files to the following files:
 
-- `my_lambda/v123/projectname.zip`
-- `my_lambda/latest/projectname.zip`
+- ``my_lambda/v123/projectname.zip``
+- ``my_lambda/latest/projectname.zip``
 
 In an TeamCity Environment (teamcity_output = True) you can use the property
 ``teamcity_parameter`` to push en ``##teamcity[setParameter name='' value='']``
@@ -136,12 +136,12 @@ tupels:
         ])
 
 The uploaded files will be placed in a directory with the version number,
-and in a `latest/` directory, such as:
+and in a ``latest/`` directory, such as:
 
-- `v123/filename1.json`
-- `v123/filename2.json`
-- `latest/filename1.json`
-- `latest/filename2.json`
+- ``v123/filename1.json``
+- ``v123/filename2.json``
+- ``latest/filename1.json``
+- ``latest/filename2.json``
 
 You can use the property ``template_key_prefix`` to add a prefix to the uploaded
 files. For example:
@@ -152,15 +152,16 @@ files. For example:
 
 This will upload the files to the following files:
 
-- `my_lambda/v123/filename1.json`
-- `my_lambda/v123/filename2.json`
-- `my_lambda/latest/filename1.json`
-- `my_lambda/latest/filename2.json`
+- ``my_lambda/v123/filename1.json``
+- ``my_lambda/v123/filename2.json``
+- ``my_lambda/latest/filename1.json``
+- ``my_lambda/latest/filename2.json``
 
 NOTE: This task is available for Python 2.7 and up.
 
 Licence
 =======
+
 Copyright 2015 Immobilienscout24 GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
