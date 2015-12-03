@@ -74,13 +74,14 @@ def package_lambda_code(project, logger):
     zip_recursive(archive, scripts)
     write_version(project, archive)
     archive.close()
-    logger.info('Lambda zip is available at: "{0}".'.format(path_to_zipfile))
+    logger.info('Lambda-zip is available at: "{0}".'.format(path_to_zipfile))
 
 
 @task('upload_zip_to_s3', description='Upload a packaged lambda-zip to S3')
 @depends('package_lambda_code')
 def upload_zip_to_s3(project, logger):
     path_to_zipfile = get_path_to_zipfile(project)
+    logger.info('Found lambda-zip at: "{0}".'.format(path_to_zipfile))
     with open(path_to_zipfile, 'rb') as fp:
         data = fp.read()
     bucket_prefix = project.get_property('bucket_prefix')
