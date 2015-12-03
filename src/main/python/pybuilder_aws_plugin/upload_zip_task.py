@@ -71,7 +71,8 @@ def package_lambda_code(project, logger):
     sources = project.expand_path('$dir_source_main_python')
     zip_recursive(archive, sources)
     scripts = project.expand_path('$dir_source_main_scripts')
-    zip_recursive(archive, scripts)
+    if os.path.exists(scripts) and os.path.isdir(scripts):
+        zip_recursive(archive, scripts)
     write_version(project, archive)
     archive.close()
     logger.info('Lambda-zip is available at: "{0}".'.format(path_to_zipfile))
