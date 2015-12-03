@@ -153,6 +153,7 @@ class TestPrepareDependenciesDir(TestCase):
         self.mock_aspip.side_effect = lambda x: x
         self.mock_popen.return_value.communicate.return_value = (1, 2)
         self.input_project = mock.Mock()
+        self.input_project.get_property.return_value = ""
 
     def tearDown(self):
         self.patch_popen.stop()

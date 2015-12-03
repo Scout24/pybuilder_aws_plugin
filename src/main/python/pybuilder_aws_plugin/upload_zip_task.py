@@ -27,11 +27,14 @@ def prepare_dependencies_dir(project, target_directory, excludes=None):
     """Get all dependencies from project and install them to given dir"""
     excludes = excludes or []
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
-    pip_cmd = 'pip install --target {0} {1}'
+    index_url = project.get_property('install_dependencies_index_url')
+    if index_url:
+        index_url = "--index-url {0}".format(index_url)
+    pip_cmd = 'pip install --target {0} {1} {2}'
     for dependency in dependencies:
         if dependency in excludes:
             continue
-        cmd = pip_cmd.format(target_directory, dependency).split()
+        cmd = pip_cmd.format(target_directory, index_url, dependency).split()
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         stdout, _ = process.communicate()
 
