@@ -157,7 +157,7 @@ class TestPrepareDependenciesDir(TestCase):
 
     def tearDown(self):
         self.patch_popen.stop()
-        #self.patch_aspip.stop()
+        self.patch_aspip.stop()
 
     def test_prepare_dependencies_no_excludes(self):
         """Test prepare_dependencies_dir() w/o excludes."""
