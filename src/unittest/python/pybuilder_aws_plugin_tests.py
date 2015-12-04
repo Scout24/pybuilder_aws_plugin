@@ -13,10 +13,11 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_plugin.upload_zip_task import (package_lambda_code,
-                                                  prepare_dependencies_dir,
-                                                  upload_zip_to_s3)
-from pybuilder_aws_plugin import initialize_plugin
+from pybuilder_aws_plugin import (package_lambda_code,
+                                  upload_zip_to_s3,
+                                  initialize_plugin,
+                                  )
+from pybuilder_aws_plugin.lambda_tasks import prepare_dependencies_dir
 
 
 class TestInitializePlugin(TestCase):
@@ -55,7 +56,7 @@ class PackageLambdaCodeTest(TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    @mock.patch('pybuilder_aws_plugin.upload_zip_task.prepare_dependencies_dir')
+    @mock.patch('pybuilder_aws_plugin.lambda_tasks.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(
             self, prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
@@ -144,10 +145,10 @@ class TestPrepareDependenciesDir(TestCase):
 
     def setUp(self):
         self.patch_popen = mock.patch(
-            'pybuilder_aws_plugin.upload_zip_task.subprocess.Popen')
+            'pybuilder_aws_plugin.lambda_tasks.subprocess.Popen')
         self.mock_popen = self.patch_popen.start()
         self.patch_aspip = mock.patch(
-            'pybuilder_aws_plugin.upload_zip_task.as_pip_argument')
+            'pybuilder_aws_plugin.lambda_tasks.as_pip_argument')
         self.mock_aspip = self.patch_aspip.start()
         self.mock_aspip.side_effect = lambda x: x.name
         self.mock_popen.return_value.communicate.return_value = (1, 2)
