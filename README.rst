@@ -16,36 +16,42 @@ PyBuilder plugin to handle AWS functionality.
 
 How to use the Plugin
 =====================
-Add plugin dependency to your ``build.py``:
+Add plugin dependency to your ``build.py`` (will install directly from PyPi):
 
 .. code:: python
 
     use_plugin('pypi:pybuilder_aws_plugin')
 
-After this you have the following additional tasks, which are explained below.
+After this you have the following additional tasks, which are explained below:
+
+* ``package_lambda_code``
+* ``upload_zip_to_s3``
+* ``upload_cfn_to_s3``
 
 @Task: package_lambda_code
 --------------------------
-This task assembles the zip file which will be uploaded to S3 with the second
-task. What is this task doing in detail?
-
-Package all own modules
-~~~~~~~~~~~~~~~~~~~~~~~
-All modules which are found in ``src/main/python/`` where put directly into the
-temporary folder, which will zipped later.
+This task assembles the Zip-file (a.k.a. the *lambda-zip*) which will be
+uploaded to S3 with the task ``upload_zip_to_s3``. What is this task doing in
+detail?
 
 Package all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Every entry in ``build.py`` with **depends_on** is installed into the zip
-file. The target path for ``pip install`` points directly to the
-temporary folder, which will then be zipped.
+Every entry in ``build.py`` that is specified by using ``project.depends_on``
+is installed into a temporary directory  using ``pip install -t`` and are then
+copied into the lambda-zip from there.
+
+Package all own modules
+~~~~~~~~~~~~~~~~~~~~~~~
+All modules which are found in ``src/main/python/`` are copied directly into
+the lambda-zip.
 
 Package all script files
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The content in the scripts folder (``src/main/scripts``) of an pybuilder
-project is normally intended to go to ``/usr/bin``. This plugin sees this folder
-as a folder with script(s) including lambda handler functions. Therefore all
-files under this folder are put at the root layer (``/``) of the zip file.
+The content of the scripts folder (``src/main/scripts``) in a PyBuilder project
+is normally intended to be placed in ``/usr/bin``. This plugin assumes this
+directory contains script(s) including the lambda handler functions. Therefore
+all files under this folder are copied directly to the root layer (``/``) of
+the lambda-zip.
 
 @Task: upload_zip_to_s3
 -----------------------
@@ -65,22 +71,22 @@ if you need another acl you can overwrite this as follows in ``build.py``:
 
 Possible acl values are:
 
-* private
-* public-read
-* public-read-write
-* authenticated-read
-* bucket-owner-read
-* bucket-owner-full-control
+* ``private``
+* ``public-read``
+* ``public-read-write``
+* ``authenticated-read``
+* ``bucket-owner-read``
+* ``bucket-owner-full-control``
 
-Further the plugin assumes that you already have a shell with enabled aws
+Further, the plugin assumes that you already have a shell with enabled aws
 access (exported keys or .boto or ...). For that take a look at
 e.g. `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_
 
 The uploaded files will be placed in a directory with the version number,
-and in a `latest/` directory, such as:
+and in a ``latest/`` directory, such as:
 
-- `v123/projectname.zip`
-- `latest/projectname.zip`
+- ``v123/projectname.zip``
+- ``latest/projectname.zip``
 
 You can use the property ``bucket_prefix`` to add a prefix to the uploaded
 files. For example:
@@ -91,8 +97,8 @@ files. For example:
 
 This will upload the files to the following files:
 
-- `my_lambda/v123/projectname.zip`
-- `my_lambda/latest/projectname.zip`
+- ``my_lambda/v123/projectname.zip``
+- ``my_lambda/latest/projectname.zip``
 
 In an TeamCity Environment (teamcity_output = True) you can use the property
 ``teamcity_parameter`` to push en ``##teamcity[setParameter name='' value='']``
@@ -105,8 +111,13 @@ zip file. For example:
 
 @Task: upload_cfn_to_s3
 -----------------------
-This task uploads the CFN-Sphere template files as JSON to a S3 bucket.
-The bucket name is to be set as follows in ``build.py``:
+
+
+NOTE: This task is available for Python 2.7 and up, due to CFN-Sphere
+dependencies not being available for Python 2.6.
+
+This task converts and uploads the CFN-Sphere template YAML files as JSON to a
+S3 bucket.  The bucket name is to be set as follows in ``build.py``:
 
 .. code:: python
 
@@ -132,12 +143,12 @@ tupels:
         ])
 
 The uploaded files will be placed in a directory with the version number,
-and in a `latest/` directory, such as:
+and in a ``latest/`` directory, such as:
 
-- `v123/filename1.json`
-- `v123/filename2.json`
-- `latest/filename1.json`
-- `latest/filename2.json`
+- ``v123/filename1.json``
+- ``v123/filename2.json``
+- ``latest/filename1.json``
+- ``latest/filename2.json``
 
 You can use the property ``template_key_prefix`` to add a prefix to the uploaded
 files. For example:
@@ -148,15 +159,31 @@ files. For example:
 
 This will upload the files to the following files:
 
-- `my_lambda/v123/filename1.json`
-- `my_lambda/v123/filename2.json`
-- `my_lambda/latest/filename1.json`
-- `my_lambda/latest/filename2.json`
+- ``my_lambda/v123/filename1.json``
+- ``my_lambda/v123/filename2.json``
+- ``my_lambda/latest/filename1.json``
+- ``my_lambda/latest/filename2.json``
 
-NOTE: This task is available for Python 2.7 and up.
+
+The default acl for templates to be uploaded is ``bucket-owner-full-control``.
+But if you need another acl you can overwrite this as follows in ``build.py``:
+
+.. code:: python
+
+    project.set_property('template_file_access_control', '<wished_acl>')
+
+Possible acl values are:
+
+* ``private``
+* ``public-read``
+* ``public-read-write``
+* ``authenticated-read``
+* ``bucket-owner-read``
+* ``bucket-owner-full-control``
 
 Licence
 =======
+
 Copyright 2015 Immobilienscout24 GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
