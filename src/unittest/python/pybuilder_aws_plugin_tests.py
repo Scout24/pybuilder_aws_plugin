@@ -205,7 +205,7 @@ class TestPrepareDependenciesDir(TestCase):
     def test_prepare_dependencies_with_custom_index_url(self):
         self.input_project.depends_on('a')
         self.input_project.set_property('install_dependencies_index_url',
-                                       'http://example.domain')
+                                        'http://example.domain')
         prepare_dependencies_dir(self.input_project, 'targetdir')
         self.assertEqual(
             list(self.mock_popen.call_args_list), [
