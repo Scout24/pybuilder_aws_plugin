@@ -1,7 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import subprocess
-
 import zipfile
+
 
 from pybuilder.core import depends, task
 from pybuilder.plugins.python.install_dependencies_plugin import (
