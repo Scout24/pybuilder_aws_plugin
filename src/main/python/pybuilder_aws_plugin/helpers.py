@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import boto3
 from pybuilder.ci_server_interaction import flush_text_line
 from pybuilder.errors import BuildFailedException

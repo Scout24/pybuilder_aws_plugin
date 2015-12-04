@@ -1,5 +1,9 @@
-from .helpers import upload_helper, check_acl_parameter_validity
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from pybuilder.core import task
+
+from .helpers import upload_helper, check_acl_parameter_validity
 
 
 @task('upload_cfn_to_s3',
