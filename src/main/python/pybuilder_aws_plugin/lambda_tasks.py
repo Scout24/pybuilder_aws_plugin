@@ -1,13 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import subprocess
-
 import zipfile
+
 
 from pybuilder.core import depends, task
 from pybuilder.plugins.python.install_dependencies_plugin import (
     as_pip_argument)
 
-from .helpers import upload_helper, teamcity_helper
+from .helpers import (upload_helper,
+                      teamcity_helper,
+                      check_acl_parameter_validity,
+                      )
 
 
 def zip_recursive(archive, directory, folder=''):
@@ -91,6 +97,7 @@ def upload_zip_to_s3(project, logger):
         bucket_prefix, project.version, project.name)
     keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
     acl = project.get_property('lambda_file_access_control')
+    check_acl_parameter_validity('lambda_file_access_control', acl)
     upload_helper(logger, bucket_name, keyname_version, data, acl)
     upload_helper(logger, bucket_name, keyname_latest, data, acl)
     tc_param = project.get_property('teamcity_parameter')

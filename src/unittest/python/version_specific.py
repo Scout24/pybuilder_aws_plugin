@@ -5,7 +5,9 @@ from unittest import TestCase
 import boto3
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_plugin.upload_cfn_task import upload_cfn_to_s3
+from pybuilder.errors import BuildFailedException
+
+from pybuilder_aws_plugin import upload_cfn_to_s3
 
 
 class UploadJSONToS3(TestCase):
@@ -50,6 +52,14 @@ class UploadJSONToS3(TestCase):
             keys = [o.key for o in s3_object_list]
             assert version_path in keys
             assert latest_path in keys
+
+    def test_upload_fails_with_invalid_acl_value(self):
+        self.project.set_property('template_file_access_control',
+                                  'no_such_value')
+        self.assertRaises(BuildFailedException,
+                          upload_cfn_to_s3,
+                          self.project,
+                          mock.MagicMock(Logger))
 
     def tearDown(self):
         self.my_mock_s3.stop()

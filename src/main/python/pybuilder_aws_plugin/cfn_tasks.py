@@ -1,5 +1,9 @@
-from .helpers import upload_helper
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from pybuilder.core import task
+
+from .helpers import upload_helper, check_acl_parameter_validity
 
 
 @task('upload_cfn_to_s3',
@@ -34,5 +38,6 @@ def upload_cfn_to_s3(project, logger):
         latest_path = '{0}latest/{1}'.format(key_prefix, filename)
 
         acl = project.get_property('template_file_access_control')
+        check_acl_parameter_validity('template_file_access_control', acl)
         upload_helper(logger, bucket_name, version_path, output, acl)
         upload_helper(logger, bucket_name, latest_path, output, acl)

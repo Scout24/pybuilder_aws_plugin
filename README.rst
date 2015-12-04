@@ -38,7 +38,9 @@ Package all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Every entry in ``build.py`` that is specified by using ``project.depends_on``
 is installed into a temporary directory  using ``pip install -t`` and are then
-copied into the lambda-zip from there.
+copied into the lambda-zip from there. The project property
+``install_dependencies_index_url`` is respected and can be used to set a custom
+index url (e.g. internal ``devpi``) for the installation.
 
 Package all own modules
 ~~~~~~~~~~~~~~~~~~~~~~~

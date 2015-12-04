@@ -13,10 +13,29 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
-from pybuilder_aws_plugin.upload_zip_task import (package_lambda_code,
-                                                  prepare_dependencies_dir,
-                                                  upload_zip_to_s3)
-from pybuilder_aws_plugin import initialize_plugin
+from pybuilder.errors import BuildFailedException
+
+from pybuilder_aws_plugin import (package_lambda_code,
+                                  upload_zip_to_s3,
+                                  initialize_plugin,
+                                  )
+from pybuilder_aws_plugin.lambda_tasks import prepare_dependencies_dir
+from pybuilder_aws_plugin.helpers import (check_acl_parameter_validity,
+                                          permissible_acl_values,
+                                          )
+
+
+class TestCheckACLParameterValidity(TestCase):
+
+    def test_invalid_value_raises_exception(self):
+        self.assertRaises(BuildFailedException,
+                          check_acl_parameter_validity,
+                          'some_acl_property',
+                          'no_such_value')
+
+    def test_all_valid_values_ok(self):
+        for v in permissible_acl_values:
+            check_acl_parameter_validity('some_acl_property', v)
 
 
 class TestInitializePlugin(TestCase):
@@ -55,7 +74,7 @@ class PackageLambdaCodeTest(TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    @mock.patch('pybuilder_aws_plugin.upload_zip_task.prepare_dependencies_dir')
+    @mock.patch('pybuilder_aws_plugin.lambda_tasks.prepare_dependencies_dir')
     def test_package_lambda_assembles_zipfile_correctly(
             self, prepare_dependencies_dir_mock):
         package_lambda_code(self.project, mock.MagicMock(Logger))
@@ -133,6 +152,14 @@ class UploadZipToS3Test(TestCase):
 
         flush_text_line_mock.assert_not_called()
 
+    def test_upload_fails_with_invalid_acl_value(self):
+        self.project.set_property('lambda_file_access_control',
+                                  'no_such_value')
+        self.assertRaises(BuildFailedException,
+                          upload_zip_to_s3,
+                          self.project,
+                          mock.MagicMock(Logger))
+
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
         pass
@@ -144,16 +171,15 @@ class TestPrepareDependenciesDir(TestCase):
 
     def setUp(self):
         self.patch_popen = mock.patch(
-            'pybuilder_aws_plugin.upload_zip_task.subprocess.Popen')
+            'pybuilder_aws_plugin.lambda_tasks.subprocess.Popen')
         self.mock_popen = self.patch_popen.start()
         self.patch_aspip = mock.patch(
-            'pybuilder_aws_plugin.upload_zip_task.as_pip_argument')
+            'pybuilder_aws_plugin.lambda_tasks.as_pip_argument')
         self.mock_aspip = self.patch_aspip.start()
-        # Mock return value unmodified
-        self.mock_aspip.side_effect = lambda x: x
+        self.mock_aspip.side_effect = lambda x: x.name
         self.mock_popen.return_value.communicate.return_value = (1, 2)
-        self.input_project = mock.Mock()
-        self.input_project.get_property.return_value = ""
+        self.input_project = Project('.')
+        self.input_project.set_property('install_dependencies_index_url', '')
 
     def tearDown(self):
         self.patch_popen.stop()
@@ -161,7 +187,8 @@ class TestPrepareDependenciesDir(TestCase):
 
     def test_prepare_dependencies_no_excludes(self):
         """Test prepare_dependencies_dir() w/o excludes."""
-        self.input_project.dependencies = ['a', 'b', 'c']
+        for dependency in ['a', 'b', 'c']:
+            self.input_project.depends_on(dependency)
         prepare_dependencies_dir(self.input_project, 'targetdir')
         self.assertEqual(self.mock_aspip.call_count, 3)
         self.assertNotEqual(self.mock_aspip.call_count, 4)
@@ -183,7 +210,8 @@ class TestPrepareDependenciesDir(TestCase):
 
     def test_prepare_dependencies_with_excludes(self):
         """Test prepare_dependencies_dir() w/ excludes."""
-        self.input_project.dependencies = ['a', 'b', 'c', 'd', 'e']
+        for dependency in ['a', 'b', 'c', 'd', 'e']:
+            self.input_project.depends_on(dependency)
         prepare_dependencies_dir(
             self.input_project, 'targetdir', excludes=['b', 'e', 'a'])
         self.assertEqual(self.mock_aspip.call_count, 5)
@@ -200,6 +228,19 @@ class TestPrepareDependenciesDir(TestCase):
             self.mock_popen.return_value.communicate.call_count, 2)
         self.assertNotEqual(
             self.mock_popen.return_value.communicate.call_count, 1)
+
+    def test_prepare_dependencies_with_custom_index_url(self):
+        self.input_project.depends_on('a')
+        self.input_project.set_property('install_dependencies_index_url',
+                                        'http://example.domain')
+        prepare_dependencies_dir(self.input_project, 'targetdir')
+        self.assertEqual(
+            list(self.mock_popen.call_args_list), [
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir',  '--index-url',
+                     'http://example.domain', 'a'],
+                    stdout=subprocess.PIPE),
+            ])
 
 
 if sys.version_info[0:2] >= (2, 7):
