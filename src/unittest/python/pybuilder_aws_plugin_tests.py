@@ -152,6 +152,14 @@ class UploadZipToS3Test(TestCase):
 
         flush_text_line_mock.assert_not_called()
 
+    def test_upload_fails_with_invalid_acl_value(self):
+        self.project.set_property('lambda_file_access_control',
+                                  'no_such_value')
+        self.assertRaises(BuildFailedException,
+                          upload_zip_to_s3,
+                          self.project,
+                          mock.MagicMock(Logger))
+
     @mock_s3
     def test_handle_failure_if_no_such_bucket(self):
         pass
