@@ -13,11 +13,28 @@ import boto3
 import mock
 from moto import mock_s3
 from pybuilder.core import Logger, Project
+from pybuilder.errors import BuildFailedException
 from pybuilder_aws_plugin import (package_lambda_code,
                                   upload_zip_to_s3,
                                   initialize_plugin,
                                   )
 from pybuilder_aws_plugin.lambda_tasks import prepare_dependencies_dir
+from pybuilder_aws_plugin.helpers import (check_acl_parameter_validity,
+                                          permissible_acl_values,
+                                          )
+
+
+class TestCheckACLParameterValidity(TestCase):
+
+    def test_invalid_value_raises_exception(self):
+        self.assertRaises(BuildFailedException,
+                          check_acl_parameter_validity,
+                          'some_acl_property',
+                          'no_such_value')
+
+    def test_all_valid_values_ok(self):
+        for v in permissible_acl_values:
+            check_acl_parameter_validity('some_acl_property', v)
 
 
 class TestInitializePlugin(TestCase):
