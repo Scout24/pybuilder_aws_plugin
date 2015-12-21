@@ -28,7 +28,8 @@ def set_properties(project):
     project.set_property('install_dependencies_upgrade', True)
     project.depends_on("boto3")
     if sys.version_info[0:2] >= (2, 7):
-        project.depends_on('cfn-sphere')
+        project.depends_on('cfn-sphere', '>=0.1.21')
+    project.depends_on('httpretty', '<=0.8.10')
     project.build_depends_on("mock")
     project.build_depends_on("moto")
     project.set_property('coverage_break_build', False)

@@ -17,14 +17,11 @@ def upload_cfn_to_s3(project, logger):
     This means, when using Python<2.7, this task is not visible
     (see __init__.py).
     """
-    from cfn_sphere.aws.cloudformation.template_loader import (
-        CloudFormationTemplateLoader)
-    from cfn_sphere.aws.cloudformation.template_transformer import (
-        CloudFormationTemplateTransformer)
+    from cfn_sphere.file_loader import FileLoader
+    from cfn_sphere.template.transformer import CloudFormationTemplateTransformer
 
     for path, filename in project.get_property('template_files'):
-        template = CloudFormationTemplateLoader.get_template_from_url(
-            filename, path)
+        template = FileLoader.get_file_from_url(filename, path)
         transformed = CloudFormationTemplateTransformer.transform_template(
             template)
         output = transformed.get_template_json()
