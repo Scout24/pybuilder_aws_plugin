@@ -36,6 +36,8 @@ def prepare_dependencies_dir(project, target_directory, excludes=None):
     index_url = project.get_property('install_dependencies_index_url')
     if index_url:
         index_url = "--index-url {0}".format(index_url)
+    else:
+        index_url = ""
     pip_cmd = 'pip install --target {0} {1} {2}'
     for dependency in dependencies:
         if dependency in excludes:
