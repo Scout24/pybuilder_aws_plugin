@@ -14,7 +14,8 @@ python:
 before_install:
   - git fetch --unshallow
 install:
-  - pip install pybuilder coveralls
+  # Temporary workaround for https://github.com/pybuilder/pybuilder/issues/310
+  - pip install pybuilder!=0.11.3 coveralls
   - pyb -v install_dependencies
 
 script:
