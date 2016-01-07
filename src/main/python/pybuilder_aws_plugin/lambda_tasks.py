@@ -7,8 +7,6 @@ import zipfile
 
 
 from pybuilder.core import depends, task
-from pybuilder.plugins.python.install_dependencies_plugin import (
-    as_pip_argument)
 
 from .helpers import (upload_helper,
                       teamcity_helper,
@@ -28,6 +26,8 @@ def zip_recursive(archive, directory, folder=''):
                 archive, os.path.join(directory, item),
                 folder=os.path.join(folder, item))
 
+def as_pip_argument(dependency):
+    return "{0}{1}".format(dependency.name, dependency.version or "")
 
 def prepare_dependencies_dir(project, target_directory, excludes=None):
     """Get all dependencies from project and install them to given dir"""
