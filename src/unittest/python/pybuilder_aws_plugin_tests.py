@@ -179,7 +179,6 @@ class TestPrepareDependenciesDir(TestCase):
         self.mock_aspip.side_effect = lambda x: x.name
         self.mock_popen.return_value.communicate.return_value = (1, 2)
         self.input_project = Project('.')
-        self.input_project.set_property('install_dependencies_index_url', '')
 
     def tearDown(self):
         self.patch_popen.stop()
