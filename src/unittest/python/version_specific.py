@@ -19,7 +19,7 @@ class UploadJSONToS3(TestCase):
     def setUp(self):
         self.bucket_name = 'palp-cfn-json'
         self.project = Project(basedir=os.path.dirname(__file__),
-                               name='palp', version=123)
+                               name='palp', version='123')
         self.test_files = [
             (os.path.join(os.path.dirname(__file__), 'templates'),
              'alarm-topic.yml'),

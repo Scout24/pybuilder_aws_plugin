@@ -92,7 +92,7 @@ class UploadZipToS3Test(TestCase):
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
-        self.project = Project(basedir=self.tempdir, name='palp', version=123)
+        self.project = Project(basedir=self.tempdir, name='palp', version='123')
         self.project.set_property('dir_target', 'target')
         self.project.set_property('bucket_name', 'palp-lambda-zips')
         self.project.set_property(
