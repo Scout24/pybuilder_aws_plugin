@@ -123,7 +123,7 @@ S3 bucket.  The bucket name is to be set as follows in ``build.py``:
 
 .. code:: python
 
-    project.set_property('bucket_name', 'my_lambda_bucket')
+    project.set_property('bucket_name', 'my_template_bucket')
 
 The default acl for JSON files to be uploaded is ``bucket-owner-full-control``.
 But if you need another acl you can overwrite this as follows in ``build.py``:
@@ -157,14 +157,14 @@ files. For example:
 
 .. code:: python
 
-   project.set_property('template_key_prefix', 'my_lambda/')
+   project.set_property('template_key_prefix', 'my_template/')
 
 This will upload the files to the following files:
 
-- ``my_lambda/v123/filename1.json``
-- ``my_lambda/v123/filename2.json``
-- ``my_lambda/latest/filename1.json``
-- ``my_lambda/latest/filename2.json``
+- ``my_template/v123/filename1.json``
+- ``my_template/v123/filename2.json``
+- ``my_template/latest/filename1.json``
+- ``my_template/latest/filename2.json``
 
 
 The default acl for templates to be uploaded is ``bucket-owner-full-control``.
