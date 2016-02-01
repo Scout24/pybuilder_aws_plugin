@@ -173,11 +173,13 @@ class TestPrepareDependenciesDir(TestCase):
         self.patch_popen = mock.patch(
             'pybuilder_aws_plugin.lambda_tasks.subprocess.Popen')
         self.mock_popen = self.patch_popen.start()
+        self.mock_process = mock.Mock()
+        self.mock_process.returncode = 0
+        self.mock_popen.return_value = self.mock_process
         self.patch_aspip = mock.patch(
             'pybuilder_aws_plugin.lambda_tasks.as_pip_argument')
         self.mock_aspip = self.patch_aspip.start()
         self.mock_aspip.side_effect = lambda x: x.name
-        self.mock_popen.return_value.communicate.return_value = (1, 2)
         self.input_project = Project('.')
         self.mock_logger = mock.Mock()
 
@@ -244,6 +246,12 @@ class TestPrepareDependenciesDir(TestCase):
                      'http://example.domain', 'a'],
                     stdout=subprocess.PIPE),
             ])
+
+    def test_prepare_dependencies_reports_errors(self):
+        self.input_project.depends_on('a')
+        self.mock_process.returncode = 1
+        self.assertRaises(Exception,  prepare_dependencies_dir,
+            self.mock_logger, self.input_project, 'targetdir')
 
 
 if sys.version_info[0:2] >= (2, 7):

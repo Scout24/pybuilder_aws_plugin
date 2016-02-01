@@ -52,6 +52,10 @@ def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
 
         process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
         process.communicate()
+        if process.returncode != 0:
+            msg = "Command '{0}' failed to install dependency: {1}".format(
+                cmd, process.returncode)
+            raise Exception(msg)
 
 
 def get_path_to_zipfile(project):
