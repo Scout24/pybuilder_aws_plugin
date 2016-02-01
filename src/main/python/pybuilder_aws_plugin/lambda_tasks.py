@@ -5,7 +5,6 @@ import os
 import subprocess
 import zipfile
 
-
 from pybuilder.core import depends, task
 
 from .helpers import (upload_helper,
@@ -25,6 +24,7 @@ def zip_recursive(archive, directory, folder=''):
             zip_recursive(
                 archive, os.path.join(directory, item),
                 folder=os.path.join(folder, item))
+
 
 def as_pip_argument(dependency):
     return "{0}{1}".format(dependency.name, dependency.version or "")

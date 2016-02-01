@@ -26,7 +26,6 @@ from pybuilder_aws_plugin.helpers import (check_acl_parameter_validity,
 
 
 class TestCheckACLParameterValidity(TestCase):
-
     def test_invalid_value_raises_exception(self):
         self.assertRaises(BuildFailedException,
                           check_acl_parameter_validity,
@@ -39,7 +38,6 @@ class TestCheckACLParameterValidity(TestCase):
 
 
 class TestInitializePlugin(TestCase):
-
     def test_initialize_sets_variables_correctly(self):
         project = Project('.')
         initialize_plugin(project)
@@ -54,7 +52,6 @@ class TestInitializePlugin(TestCase):
 
 
 class PackageLambdaCodeTest(TestCase):
-
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
         self.testdir = os.path.join(self.tempdir, 'package_lambda_code_test')
@@ -89,7 +86,6 @@ class PackageLambdaCodeTest(TestCase):
 
 
 class UploadZipToS3Test(TestCase):
-
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
         self.project = Project(basedir=self.tempdir, name='palp', version='123')
@@ -115,7 +111,6 @@ class UploadZipToS3Test(TestCase):
         self.my_mock_s3.stop()
 
     def test_if_file_was_uploaded_to_s3(self):
-
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
         s3_object_list = [
@@ -147,7 +142,6 @@ class UploadZipToS3Test(TestCase):
 
     @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_not_set(self, flush_text_line_mock):
-
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
         flush_text_line_mock.assert_not_called()
@@ -166,7 +160,6 @@ class UploadZipToS3Test(TestCase):
 
 
 class TestPrepareDependenciesDir(TestCase):
-
     """Testcases for prepare_dependencies_dir()"""
 
     def setUp(self):
