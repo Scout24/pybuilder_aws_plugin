@@ -179,6 +179,7 @@ class TestPrepareDependenciesDir(TestCase):
         self.mock_aspip.side_effect = lambda x: x.name
         self.mock_popen.return_value.communicate.return_value = (1, 2)
         self.input_project = Project('.')
+        self.mock_logger = mock.Mock()
 
     def tearDown(self):
         self.patch_popen.stop()
@@ -188,7 +189,8 @@ class TestPrepareDependenciesDir(TestCase):
         """Test prepare_dependencies_dir() w/o excludes."""
         for dependency in ['a', 'b', 'c']:
             self.input_project.depends_on(dependency)
-        prepare_dependencies_dir(self.input_project, 'targetdir')
+        prepare_dependencies_dir(
+            self.mock_logger, self.input_project, 'targetdir')
         self.assertEqual(self.mock_aspip.call_count, 3)
         self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
@@ -212,7 +214,8 @@ class TestPrepareDependenciesDir(TestCase):
         for dependency in ['a', 'b', 'c', 'd', 'e']:
             self.input_project.depends_on(dependency)
         prepare_dependencies_dir(
-            self.input_project, 'targetdir', excludes=['b', 'e', 'a'])
+            self.mock_logger, self.input_project, 'targetdir',
+            excludes=['b', 'e', 'a'])
         self.assertEqual(self.mock_aspip.call_count, 5)
         self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
@@ -232,7 +235,8 @@ class TestPrepareDependenciesDir(TestCase):
         self.input_project.depends_on('a')
         self.input_project.set_property('install_dependencies_index_url',
                                         'http://example.domain')
-        prepare_dependencies_dir(self.input_project, 'targetdir')
+        prepare_dependencies_dir(
+            self.mock_logger, self.input_project, 'targetdir')
         self.assertEqual(
             list(self.mock_popen.call_args_list), [
                 mock.call(

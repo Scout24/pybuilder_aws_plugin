@@ -29,22 +29,29 @@ def zip_recursive(archive, directory, folder=''):
 def as_pip_argument(dependency):
     return "{0}{1}".format(dependency.name, dependency.version or "")
 
-def prepare_dependencies_dir(project, target_directory, excludes=None):
+
+def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
     """Get all dependencies from project and install them to given dir"""
     excludes = excludes or []
     dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
+
     index_url = project.get_property('install_dependencies_index_url')
     if index_url:
         index_url = "--index-url {0}".format(index_url)
     else:
         index_url = ""
+
     pip_cmd = 'pip install --target {0} {1} {2}'
     for dependency in dependencies:
         if dependency in excludes:
+            logger.debug("Not installing dependency {0}.".format(dependency))
             continue
-        cmd = pip_cmd.format(target_directory, index_url, dependency).split()
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        stdout, _ = process.communicate()
+
+        cmd = pip_cmd.format(target_directory, index_url, dependency)
+        logger.debug("Installing dependency {0}: '{1}'".format(dependency, cmd))
+
+        process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+        process.communicate()
 
 
 def get_path_to_zipfile(project):
@@ -70,7 +77,7 @@ def package_lambda_code(project, logger):
     excludes = ['boto', 'boto3']
     logger.info('Going to prepare dependencies.')
     prepare_dependencies_dir(
-        project, lambda_dependencies_dir, excludes=excludes)
+        logger, project, lambda_dependencies_dir, excludes=excludes)
     logger.info('Going to assemble the lambda-zip.')
     path_to_zipfile = get_path_to_zipfile(project)
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
