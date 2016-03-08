@@ -47,11 +47,8 @@ class UploadJSONToS3(TestCase):
             version_path = '{0}v{1}/{2}'.format(
                 key_prefix, self.project.version,
                 test_file[1].replace('yml', 'json'))
-            latest_path = '{0}latest/{1}'.format(
-                key_prefix, test_file[1].replace('yml', 'json'))
             keys = [o.key for o in s3_object_list]
             assert version_path in keys
-            assert latest_path in keys
 
     def test_upload_fails_with_invalid_acl_value(self):
         self.project.set_property('template_file_access_control',

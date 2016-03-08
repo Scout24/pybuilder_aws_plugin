@@ -18,6 +18,8 @@ version = VCSRevision().get_git_revision_count()
 summary = "PyBuilder plugin to handle AWS functionality"
 authors = [Author('Valentin Haenel', 'valentin@haenel.co'),
            Author('Stefan Neben',    'stefan.neben@gmail.com'),
+           Author('Carsten Rose',    'modebm@gmail.com'),
+           Author('Schlomo Schapiro','schlomo.schapiro@gmail.com')
            ]
 license = 'Apache'
 url = 'https://github.com/ImmobilienScout24/pybuilder_aws_plugin'
@@ -34,7 +36,7 @@ def set_properties(project):
     project.build_depends_on("moto")
     project.set_property('coverage_break_build', False)
     project.set_property('distutils_classifiers', [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',

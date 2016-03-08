@@ -116,8 +116,7 @@ class UploadZipToS3Test(TestCase):
         s3_object_list = [
             o for o in self.s3.Bucket('palp-lambda-zips').objects.all()]
         self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
-        self.assertEqual(s3_object_list[0].key, 'latest/palp.zip')
-        self.assertEqual(s3_object_list[1].key, 'v123/palp.zip')
+        self.assertEqual(s3_object_list[0].key, 'v123/palp.zip')
 
     def test_if_file_was_uploaded_to_s3_with_bucket_prefix(self):
         self.project.set_property('bucket_prefix', 'palp/')
@@ -127,8 +126,7 @@ class UploadZipToS3Test(TestCase):
         s3_object_list = [
             o for o in self.s3.Bucket('palp-lambda-zips').objects.all()]
         self.assertEqual(s3_object_list[0].bucket_name, 'palp-lambda-zips')
-        self.assertEqual(s3_object_list[0].key, 'palp/latest/palp.zip')
-        self.assertEqual(s3_object_list[1].key, 'palp/v123/palp.zip')
+        self.assertEqual(s3_object_list[0].key, 'palp/v123/palp.zip')
 
     @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_set(self, flush_text_line_mock):
