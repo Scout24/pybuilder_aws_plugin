@@ -112,11 +112,9 @@ def upload_zip_to_s3(project, logger):
     bucket_name = project.get_mandatory_property('bucket_name')
     keyname_version = '{0}v{1}/{2}.zip'.format(
             bucket_prefix, project.version, project.name)
-    # keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
     acl = project.get_property('lambda_file_access_control')
     check_acl_parameter_validity('lambda_file_access_control', acl)
     upload_helper(logger, bucket_name, keyname_version, data, acl)
-    # upload_helper(logger, bucket_name, keyname_latest, data, acl)
     tc_param = project.get_property('teamcity_parameter')
     if project.get_property("teamcity_output") and tc_param:
         teamcity_helper(tc_param, keyname_version)
