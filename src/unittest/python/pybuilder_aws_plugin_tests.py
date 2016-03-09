@@ -89,7 +89,8 @@ class PackageLambdaCodeTest(TestCase):
 class TestsWithS3(TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
-        self.project = Project(basedir=self.tempdir, name='palp', version='123')
+        self.project = Project(
+            basedir=self.tempdir, name='palp', version='123')
         self.project.set_property('dir_target', 'target')
         self.bucket_name = 'palp-lambda-zips'
         self.project.set_property(
@@ -140,7 +141,8 @@ class UploadZipToS3Test(TestsWithS3):
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
 
         flush_text_line_mock.assert_called_with(
-                "##teamcity[setParameter name='palp_keyname' value='v123/palp.zip']")
+            ("##teamcity[setParameter "
+             "name='palp_keyname' value='v123/palp.zip']"))
 
     @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
     def test_teamcity_output_if_not_set(self, flush_text_line_mock):
@@ -164,27 +166,34 @@ class UploadZipToS3Test(TestsWithS3):
 class LambdaReleaseTest(TestsWithS3):
     def test_release_successful(self):
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
-        lambda_release(self.project,mock.MagicMock(Logger))
-        s3_keys = [o.key for o in self.s3.Bucket(self.bucket_name).objects.all()]
+        lambda_release(self.project, mock.MagicMock(Logger))
+        s3_keys = [o.key for o
+                   in self.s3.Bucket(self.bucket_name).objects.all()]
         release_keyname = '{0}latest/{1}.zip'.format(
-                self.project.get_property('bucket_prefix'),self.project.name)
+                self.project.get_property('bucket_prefix'), self.project.name)
         self.assertTrue(release_keyname in s3_keys)
-        s3_grants=self.s3.Object(
-                bucket_name=self.bucket_name, key=release_keyname).Acl().grants
-        self.assertDictContainsSubset({"Permission":"FULL_CONTROL"},s3_grants[0],
-                                      "Default ACL of FULL_CONTROL not found!")
+        s3_grants = self.s3.Object(
+            bucket_name=self.bucket_name, key=release_keyname).Acl().grants
+        self.assertDictContainsSubset(
+            {"Permission": "FULL_CONTROL"},
+            s3_grants[0],
+            "Default ACL of FULL_CONTROL not found!")
 
     def test_release_successful_with_bucket_prefix(self):
-        self.project.set_property('bucket_prefix','palp/')
+        self.project.set_property('bucket_prefix', 'palp/')
         upload_zip_to_s3(self.project, mock.MagicMock(Logger))
-        lambda_release(self.project,mock.MagicMock(Logger))
-        s3_keys = [o.key for o in self.s3.Bucket(self.bucket_name).objects.all()]
+        lambda_release(self.project, mock.MagicMock(Logger))
+        s3_keys = [o.key for o
+                   in self.s3.Bucket(self.bucket_name).objects.all()]
         release_keyname = '{0}latest/{1}.zip'.format(
-                self.project.get_property('bucket_prefix'),self.project.name)
+                self.project.get_property('bucket_prefix'), self.project.name)
         self.assertTrue(release_keyname in s3_keys)
-        s3_grants=self.s3.Object(
+        s3_grants = self.s3.Object(
                 bucket_name=self.bucket_name, key=release_keyname).Acl().grants
-        self.assertDictContainsSubset({"Permission":"FULL_CONTROL"},s3_grants[0])
+        self.assertDictContainsSubset(
+            {"Permission": "FULL_CONTROL"},
+            s3_grants[0])
+
 
 class TestPrepareDependenciesDir(TestCase):
     """Testcases for prepare_dependencies_dir()"""
@@ -260,12 +269,13 @@ class TestPrepareDependenciesDir(TestCase):
         prepare_dependencies_dir(
                 self.mock_logger, self.input_project, 'targetdir')
         self.assertEqual(
-                list(self.mock_popen.call_args_list), [
-                    mock.call(
-                            ['pip', 'install', '--target', 'targetdir', '--index-url',
-                             'http://example.domain', 'a'],
-                            stdout=subprocess.PIPE),
-                ])
+            list(self.mock_popen.call_args_list),
+            [
+                mock.call(
+                    ['pip', 'install', '--target', 'targetdir', '--index-url',
+                        'http://example.domain', 'a'],
+                    stdout=subprocess.PIPE),
+            ])
 
     def test_prepare_dependencies_reports_errors(self):
         self.input_project.depends_on('a')
