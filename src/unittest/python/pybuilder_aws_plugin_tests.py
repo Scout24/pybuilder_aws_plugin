@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
-from unittest import TestCase
+from unittest2 import TestCase
 
 import boto3
 import mock

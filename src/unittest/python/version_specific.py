@@ -5,7 +5,7 @@ the time being. Python3 support is underway.
 
 import os
 import mock
-from unittest import TestCase
+from unittest2 import TestCase
 
 import boto3
 from moto import mock_s3

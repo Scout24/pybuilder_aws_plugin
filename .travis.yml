@@ -7,7 +7,6 @@ python:
   - "3.4"
   - "3.5"
   - "pypy"
-  - "pypy3"
 # Travis will clone only 50 commits by default. This project however uses the
 # number of commits to determine the version number. Hence we need ALL the
 # commits. This will make the lone unshallow.
