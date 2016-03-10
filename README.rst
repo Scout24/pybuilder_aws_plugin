@@ -12,11 +12,14 @@
 pybuilder_aws_plugin
 ====================
 
-PyBuilder plugin to simplify building projects for Amazon Web Services. The following use cases are supported:
+PyBuilder plugin to simplify building projects for Amazon Web Services. The
+following use cases are supported:
 
 * Packaging Python code for Lambda_ and uploading the result to S3_.
-* Maintain CloudFormation templates in YAML_ and upload to S3_. Conversion done with cfn-sphere_.
-* Deploy code and templates for a `CloudFormation custom resource backed by a Lambda function`__.
+* Maintain CloudFormation templates in YAML_ and upload to S3_. Conversion done
+  with cfn-sphere_.
+* Deploy code and templates for a `CloudFormation custom resource backed by a
+  Lambda function`__.
 
 .. _Lambda: https://aws.amazon.com/documentation/lambda/
 .. _S3: http://aws.amazon.com/documentation/s3/
@@ -52,7 +55,8 @@ integration tests.
 Usage
 =====================
 
-Add the following plugin dependency to your ``build.py`` (will install directly from PyPi):
+Add the following plugin dependency to your ``build.py`` (will install directly
+from PyPi):
 
 .. code:: python
 
@@ -71,16 +75,18 @@ After this you have the following additional tasks, which are explained below:
 @Task: package_lambda_code
 --------------------------
 This task `assembles the Zip-file`__ (a.k.a. the *lambda-zip*) which will be
-uploaded to S3_ with the task ``upload_zip_to_s3``. This task consists of the following steps:
+uploaded to S3_ with the task ``upload_zip_to_s3``. This task consists of the
+following steps:
 
 .. __: http://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
 
 Add all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Install every entry in ``build.py``, that is specified by using ``project.depends_on()``,
-into a temporary directory via ``pip install -t``. These will be included in the resulting lambda-zip. Set the project property
-``install_dependencies_index_url`` to use a custom
-index url (e.g. an internal `PYPI server`__).
+Install every entry in ``build.py``, that is specified by using
+``project.depends_on()``, into a temporary directory via ``pip install -t``.
+These will be included in the resulting lambda-zip. Set the project property
+``install_dependencies_index_url`` to use a custom index url (e.g. an internal
+`PYPI server`__).
 
 .. __: http://doc.devpi.net/latest/
 
@@ -94,17 +100,19 @@ Add all script files
 The content of the scripts folder (``src/main/scripts``) in a PyBuilder project
 is normally intended to be placed in ``/usr/bin``. This plugin assumes this
 directory contains scripts including the lambda handler functions. Therefore
-all files under this folder are copied directly to the root directory (``/``) of
-the lambda-zip.
+all files under this folder are copied directly to the root directory (``/``)
+of the lambda-zip.
 
 Pack everything into the Zip-file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All these files are packed as a Zip-file that complies with the Lambda_ specification.
+All these files are packed as a Zip-file that complies with the Lambda_
+specification.
 
 @Task: upload_zip_to_s3
 -----------------------
-This task uploads the generated zip to an S3_ bucket. The bucket name is set in ``build.py``:
+This task uploads the generated zip to an S3_ bucket. The bucket name is set in
+``build.py``:
 
 .. code:: python
 
@@ -129,9 +137,12 @@ Possible acl values are:
 * ``bucket-owner-full-control``
 
 Furthermore, the plugin assumes that you already have a shell with enabled AWS
-access (exported keys or .boto or ...). `afp-cli <https://github.com/ImmobilienScout24/afp-cli>`_ is a tool to provide temporary credentials for shell users.
+access (exported keys or .boto or ...). `afp-cli
+<https://github.com/ImmobilienScout24/afp-cli>`_ is a tool to provide temporary
+credentials for shell users.
 
-The uploaded files will be placed in a directory with the version number like: ``v123/projectname.zip``.
+The uploaded files will be placed in a directory with the version number like:
+``v123/projectname.zip``.
 
 Use the property ``bucket_prefix`` to add a prefix to the uploaded
 files. For example:
@@ -140,9 +151,11 @@ files. For example:
 
    project.set_property('bucket_prefix', 'my_lambda/')
 
-This will upload the zip-file to the following key: ``my_lambda/v123/projectname.zip``
+This will upload the zip-file to the following key:
+``my_lambda/v123/projectname.zip``
 
-On TeamCity_ you can enable setting a TeamCity build parameter with the key of the uploaded zip-file:
+On TeamCity_ you can enable setting a TeamCity build parameter with the key of
+the uploaded zip-file:
 
 .. _TeamCity: https://www.jetbrains.com/teamcity/
 .. code::python
@@ -164,8 +177,8 @@ line which TeamCity can parse. You can then use the value in other build steps.
 NOTE: This task is available for Python 2.7 and up, due to cfn-sphere_
 dependencies not being available for Python 2.6.
 
-This task converts and uploads the CFN-Sphere template YAML_ files as JSON_ to a
-S3_ bucket.  Set the bucket name in ``build.py``:
+This task converts and uploads the CFN-Sphere template YAML_ files as JSON_ to
+a S3_ bucket.  Set the bucket name in ``build.py``:
 
 .. _JSON: http://www.json.org/
 .. code:: python
