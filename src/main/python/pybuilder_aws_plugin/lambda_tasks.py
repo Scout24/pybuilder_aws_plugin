@@ -8,6 +8,7 @@ import zipfile
 from pybuilder.core import depends, task
 
 from .helpers import (upload_helper,
+                      copy_helper,
                       teamcity_helper,
                       check_acl_parameter_validity,
                       )
@@ -18,12 +19,12 @@ def zip_recursive(archive, directory, folder=''):
     for item in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, item)):
             archive.write(
-                os.path.join(directory, item), os.path.join(folder, item),
-                zipfile.ZIP_DEFLATED)
+                    os.path.join(directory, item), os.path.join(folder, item),
+                    zipfile.ZIP_DEFLATED)
         elif os.path.isdir(os.path.join(directory, item)):
             zip_recursive(
-                archive, os.path.join(directory, item),
-                folder=os.path.join(folder, item))
+                    archive, os.path.join(directory, item),
+                    folder=os.path.join(folder, item))
 
 
 def as_pip_argument(dependency):
@@ -54,13 +55,13 @@ def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
         process.communicate()
         if process.returncode != 0:
             msg = "Command '{0}' failed to install dependency: {1}".format(
-                cmd, process.returncode)
+                    cmd, process.returncode)
             raise Exception(msg)
 
 
 def get_path_to_zipfile(project):
     return os.path.join(
-        project.expand_path('$dir_target'), '{0}.zip'.format(project.name))
+            project.expand_path('$dir_target'), '{0}.zip'.format(project.name))
 
 
 def write_version(project, archive):
@@ -73,15 +74,18 @@ def write_version(project, archive):
 
 @task('package_lambda_code',
       description='Package the modules, dependencies and scripts into a '
-      'lambda-zip')
-@depends('package')
+                  'lambda-zip')
+@depends('clean',
+         'install_build_dependencies',
+         'publish',
+         'package')
 def package_lambda_code(project, logger):
     dir_target = project.expand_path('$dir_target')
     lambda_dependencies_dir = os.path.join(dir_target, 'lambda_dependencies')
     excludes = ['boto', 'boto3']
     logger.info('Going to prepare dependencies.')
     prepare_dependencies_dir(
-        logger, project, lambda_dependencies_dir, excludes=excludes)
+            logger, project, lambda_dependencies_dir, excludes=excludes)
     logger.info('Going to assemble the lambda-zip.')
     path_to_zipfile = get_path_to_zipfile(project)
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
@@ -107,12 +111,22 @@ def upload_zip_to_s3(project, logger):
     bucket_prefix = project.get_property('bucket_prefix')
     bucket_name = project.get_mandatory_property('bucket_name')
     keyname_version = '{0}v{1}/{2}.zip'.format(
-        bucket_prefix, project.version, project.name)
-    keyname_latest = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
+            bucket_prefix, project.version, project.name)
     acl = project.get_property('lambda_file_access_control')
     check_acl_parameter_validity('lambda_file_access_control', acl)
     upload_helper(logger, bucket_name, keyname_version, data, acl)
-    upload_helper(logger, bucket_name, keyname_latest, data, acl)
     tc_param = project.get_property('teamcity_parameter')
     if project.get_property("teamcity_output") and tc_param:
         teamcity_helper(tc_param, keyname_version)
+
+@task('lambda_release', description='Copy lambda zip file from versioned path to latest path in S3')
+def lambda_release(project,logger):
+    bucket_prefix = project.get_property('bucket_prefix')
+    bucket_name = project.get_mandatory_property('bucket_name')
+    acl = project.get_property('lambda_file_access_control')
+    check_acl_parameter_validity('lambda_file_access_control', acl)
+
+    source_key = '{0}v{1}/{2}.zip'.format(bucket_prefix, project.version, project.name)
+    destination_key = '{0}latest/{1}.zip'.format(bucket_prefix, project.name)
+    copy_helper(logger, bucket_name, source_key, destination_key, acl)
+
