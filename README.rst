@@ -224,7 +224,8 @@ This provides a simple release mechanism that follows the "latest greatest" prin
 For CloudFormation custom resources backed by a Lambda function these two tasks provide convenience wrappers to implement an "Update - Test - Release" process:
 
 .. code:: shell
-    \#!/bin/bash
+
+    #!/bin/bash
     set -e
     pyb upload_custom_resource
     ./run-integration-test.py
