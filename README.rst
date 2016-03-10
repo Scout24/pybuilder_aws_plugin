@@ -216,7 +216,9 @@ These tasks copy the lambda-zip or CFN template files from the versioned path to
 - ``my_lambda/v123/my-project.zip`` is copied to ``my_lambda/latest/my-project.zip``
 - ``my_templates/v123/my-cfn.json`` is copied to ``my_templates/latest/my-cfn.json``
 
-This provides a simple release mechanism that follows the "latest greatest" principle. Users can rely on the files under ``latest``to tbe the latest tested version.
+This provides a simple release mechanism that follows the "latest greatest"
+principle. Users can rely on the files under ``latest`` to be the latest tested
+version.
 
 @Task: upload_custom_resource, release_custom_resource
 ------------------------------------------------------
