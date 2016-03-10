@@ -1,6 +1,6 @@
 """
-These tests are separate since they only work with Python2 >2.6 by
-the time being. Python3 support is underway.
+These tests are separate since they only work with Python2 >2.6 for the time
+being. Python3 support is underway.
 """
 
 import os
