@@ -30,13 +30,22 @@ Incompatible Changes
 >161 (March 2016) Upload and Release are Separate Steps
 -------------------------------------------------------
 
-Till up to version 161 ``upload_zip_to_s3`` and ``upload_cfn_to_s3`` tasks would upload the files to S3 both under a versioned (``v123``) path and under a ``latest`` path element. This behavior prevents testing the new version before releasing it under the ``latest`` path.
+Till up to version 161 ``upload_zip_to_s3`` and ``upload_cfn_to_s3`` tasks
+would upload the files to S3 both under a versioned (``v123``) path and under a
+``latest`` path element. This behavior prevents testing the new version before
+releasing it under the ``latest`` path.
 
-Since the task name "upload" does not imply "release" and since we believe in `Test Driven Development`__ we decided to break backwards compatibility in this case.
+Since the task name "upload" does not imply "release" and since we believe in
+`Test Driven Development`__ we decided to break backwards compatibility in this
+case.
 
-From version 162 and onward the "upload" tasks will only upload files to S3 under a versioned path. We provide two new tasks ``lambda_release`` and ``cfn_release`` to explicitly copy the files from the versioned path to the ``latest`` path.
+From version 162 and onward the "upload" tasks will only upload files to S3
+under a versioned path. We provide two new tasks ``lambda_release`` and
+``cfn_release`` to explicitly copy the files from the versioned path to the
+``latest`` path.
 
-We apologize for the inconvenience and hope that this change will simplify your integration tests.
+We apologize for the inconvenience and hope that this change will simplify your
+integration tests.
 
 .. __: https://en.wikipedia.org/wiki/Test-driven_development
 
@@ -193,7 +202,8 @@ This will upload the files to the following files:
 - ``my_template/v123/filename2.json``
 
 
-The ACL for the JSON_ files is ``bucket-owner-full-control``. Set another ACL in ``build.py``:
+The ACL for the JSON_ files is ``bucket-owner-full-control``. Set another ACL
+in ``build.py``:
 
 .. code:: python
 
@@ -211,7 +221,8 @@ Possible acl values are:
 @Task: lambda_release, cfn_release
 -----------------------------------
 
-These tasks copy the lambda-zip or CFN template files from the versioned path to version independant path named ``latest``. For Example:
+These tasks copy the lambda-zip or CFN template files from the versioned path
+to version independant path named ``latest``. For Example:
 
 - ``my_lambda/v123/my-project.zip`` is copied to ``my_lambda/latest/my-project.zip``
 - ``my_templates/v123/my-cfn.json`` is copied to ``my_templates/latest/my-cfn.json``
@@ -223,7 +234,8 @@ version.
 @Task: upload_custom_resource, release_custom_resource
 ------------------------------------------------------
 
-For CloudFormation custom resources backed by a Lambda function these two tasks provide convenience wrappers to implement an "Update - Test - Release" process:
+For CloudFormation custom resources backed by a Lambda function these two tasks
+provide convenience wrappers to implement an "Update - Test - Release" process:
 
 .. code:: shell
 
@@ -233,7 +245,10 @@ For CloudFormation custom resources backed by a Lambda function these two tasks 
     ./run-integration-test.py
     pyb release_custom_resource
 
-The ``upload_custom_resource`` task bundles the ``upload_zip_to_s3`` and the ``upload_cfn_to_s3`` task. It is strongly recmomended to *not* use a ``bucket_prefix`` in order to keep the lambda-zip and CFN templates in the same direcory on S3.
+The ``upload_custom_resource`` task bundles the ``upload_zip_to_s3`` and the
+``upload_cfn_to_s3`` task. It is strongly recmomended to *not* use a
+``bucket_prefix`` in order to keep the lambda-zip and CFN templates in the same
+direcory on S3.
 
 Licence
 =======
