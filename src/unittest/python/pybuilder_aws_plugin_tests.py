@@ -57,7 +57,8 @@ class PackageLambdaCodeTest(TestCase):
         self.tempdir = tempfile.mkdtemp(prefix='palp-')
         self.testdir = os.path.join(self.tempdir, 'package_lambda_code_test')
         self.project = Project(basedir=self.testdir, name='palp')
-        shutil.copytree('src/unittest/python/package_lambda_code_test/',
+        source_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),'package_lambda_code_test/')
+        shutil.copytree(source_dir,
                         self.testdir)
 
         self.project.set_property('dir_target', 'target')

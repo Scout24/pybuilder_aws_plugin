@@ -12,7 +12,7 @@ from moto import mock_s3
 from pybuilder.core import Logger, Project
 from pybuilder.errors import BuildFailedException
 
-from pybuilder_aws_plugin import upload_cfn_to_s3, cfn_release
+from pybuilder_aws_plugin import upload_cfn_to_s3, cfn_release, release_custom_resource
 
 
 class TestsWithS3(TestCase):
@@ -89,3 +89,12 @@ class CfnReleaseTests(TestsWithS3):
             self.assertDictContainsSubset(
                 {"Permission": "FULL_CONTROL"},
                 s3_grants[0])
+
+    @mock.patch("pybuilder_aws_plugin.helpers.flush_text_line")
+    def test_release_custom_resource_teamcity_build_status(self, flush_text_line_mock):
+        self.project.set_property('teamcity_output', True)
+
+        release_custom_resource(self.project)
+
+        flush_text_line_mock.assert_called_with(
+                ("##teamcity[buildStatus text='{build.status.text} Released 123 in palp-cfn-json']"))
