@@ -88,7 +88,10 @@ These will be included in the resulting lambda-zip. Set the project property
 ``install_dependencies_index_url`` to use a custom index url (e.g. an internal
 `PYPI server`__).
 
+**Note:** This excludes `boto` and `boto3` as they are included in `AWS lambda dependencies`__ by default
+
 .. __: http://doc.devpi.net/latest/
+.. __: http://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
 
 Add all own modules
 ~~~~~~~~~~~~~~~~~~~~~~~
