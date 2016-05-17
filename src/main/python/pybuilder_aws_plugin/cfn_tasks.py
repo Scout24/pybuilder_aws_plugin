@@ -21,7 +21,7 @@ def upload_cfn_to_s3(project, logger):
     from cfn_sphere.template.transformer import CloudFormationTemplateTransformer
 
     for path, filename in project.get_property('template_files'):
-        template = FileLoader.get_file_from_url(filename, path)
+        template = FileLoader.get_cloudformation_template(filename, path)
         transformed = CloudFormationTemplateTransformer.transform_template(
                 template)
         output = transformed.get_template_json()

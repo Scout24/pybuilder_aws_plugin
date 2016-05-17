@@ -30,7 +30,7 @@ def set_properties(project):
     project.set_property('install_dependencies_upgrade', True)
     project.depends_on('boto3')
     if sys.version_info[0:2] >= (2, 7):
-        project.depends_on('cfn-sphere', '>=0.1.21')
+        project.depends_on('cfn-sphere', '>=0.1.30')
     project.depends_on('httpretty')
     project.build_depends_on('unittest2')
     project.build_depends_on('mock')
