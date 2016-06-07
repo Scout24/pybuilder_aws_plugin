@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import ast
 import os
 import subprocess
 import zipfile
 
 from pybuilder.core import depends, task
+from pybuilder.plugins.python.distutils_plugin import build_install_dependencies_string
 
 from .helpers import (upload_helper,
                       copy_helper,
@@ -27,14 +29,10 @@ def zip_recursive(archive, directory, folder=''):
                     folder=os.path.join(folder, item))
 
 
-def as_pip_argument(dependency):
-    return "{0}{1}".format(dependency.name, dependency.version or "")
-
-
 def prepare_dependencies_dir(logger, project, target_directory, excludes=None):
     """Get all dependencies from project and install them to given dir"""
     excludes = excludes or []
-    dependencies = map(lambda dep: as_pip_argument(dep), project.dependencies)
+    dependencies = ast.literal_eval(build_install_dependencies_string(project))
 
     index_url = project.get_property('install_dependencies_index_url')
     if index_url:

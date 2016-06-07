@@ -206,16 +206,11 @@ class TestPrepareDependenciesDir(TestCase):
         self.mock_process = mock.Mock()
         self.mock_process.returncode = 0
         self.mock_popen.return_value = self.mock_process
-        self.patch_aspip = mock.patch(
-                'pybuilder_aws_plugin.lambda_tasks.as_pip_argument')
-        self.mock_aspip = self.patch_aspip.start()
-        self.mock_aspip.side_effect = lambda x: x.name
         self.input_project = Project('.')
         self.mock_logger = mock.Mock()
 
     def tearDown(self):
         self.patch_popen.stop()
-        self.patch_aspip.stop()
 
     def test_prepare_dependencies_no_excludes(self):
         """Test prepare_dependencies_dir() w/o excludes."""
@@ -223,8 +218,6 @@ class TestPrepareDependenciesDir(TestCase):
             self.input_project.depends_on(dependency)
         prepare_dependencies_dir(
                 self.mock_logger, self.input_project, 'targetdir')
-        self.assertEqual(self.mock_aspip.call_count, 3)
-        self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
                 list(self.mock_popen.call_args_list), [
                     mock.call(
@@ -248,8 +241,6 @@ class TestPrepareDependenciesDir(TestCase):
         prepare_dependencies_dir(
                 self.mock_logger, self.input_project, 'targetdir',
                 excludes=['b', 'e', 'a'])
-        self.assertEqual(self.mock_aspip.call_count, 5)
-        self.assertNotEqual(self.mock_aspip.call_count, 4)
         self.assertEqual(
                 list(self.mock_popen.call_args_list), [
                     mock.call(
