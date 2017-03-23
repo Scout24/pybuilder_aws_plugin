@@ -56,10 +56,11 @@ Usage
 =====================
 
 Add the following plugin dependency to your ``build.py`` (will install directly
-from PyPi):
+from PyPi and require the install_dependencies plugin):
 
 .. code:: python
 
+    use_plugin('python.install_dependencies')
     use_plugin('pypi:pybuilder_aws_plugin')
 
 After this you have the following additional tasks, which are explained below:
