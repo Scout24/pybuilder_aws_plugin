@@ -89,9 +89,9 @@ def package_lambda_code(project, logger):
     archive = zipfile.ZipFile(path_to_zipfile, 'w')
     if os.path.isdir(lambda_dependencies_dir):
         zip_recursive(archive, lambda_dependencies_dir)
-    sources = project.expand_path('$dir_source_main_python')
+    sources = project.expand_path("$dir_source_lambda_pkg")
     zip_recursive(archive, sources)
-    scripts = project.expand_path('$dir_source_main_scripts')
+    scripts = project.expand_path("$dir_scripts_lambda_pkg")
     if os.path.exists(scripts) and os.path.isdir(scripts):
         zip_recursive(archive, scripts)
     write_version(project, archive)

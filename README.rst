@@ -81,6 +81,10 @@ following steps:
 
 .. __: http://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
 
+If you wish to use a different directory than the default python and scripts directory used by python,
+then you can set the `$dir_source_lambda_pkg` and/or `$dir_scripts_lambda_pkg` properties. This could be
+helpful when, for example, you also are using the `filter_resources` pybuilder plugin.
+
 Add all dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Install every entry in ``build.py``, that is specified by using

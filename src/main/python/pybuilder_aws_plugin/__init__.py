@@ -43,3 +43,6 @@ def initialize_plugin(project):
             'template_file_access_control', 'bucket-owner-full-control')
     project.set_property('template_key_prefix', '')
     project.set_property('teamcity_parameter', '')
+
+    project.set_property_if_unset('dir_source_lambda_pkg', '$dir_source_main_python')
+    project.set_property_if_unset('dir_scripts_lambda_pkg', '$dir_source_main_scripts')
