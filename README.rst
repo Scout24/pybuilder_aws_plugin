@@ -7,7 +7,9 @@
 .. image:: https://badge.fury.io/py/pybuilder_aws_plugin.svg
     :target: https://badge.fury.io/py/pybuilder_aws_plugin
 
-
+=======================================================
+This project is DEPRECATED and not any longer supported
+=======================================================
 ====================
 pybuilder_aws_plugin
 ====================
