@@ -69,6 +69,7 @@ class PackageLambdaCodeTest(TestCase):
 
         self.dir_target = os.path.join(self.testdir, 'target')
         self.zipfile_name = os.path.join(self.dir_target, 'palp.zip')
+        initialize_plugin(self.project)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
